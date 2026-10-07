@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { apiOrigin } from "@/lib/origin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,13 +18,9 @@ const HOP_BY_HOP = new Set([
   "upgrade",
 ]);
 
-function backendOrigin(): string {
-  return (process.env.API_PROXY_URL ?? "http://localhost:4000").replace(/\/$/, "");
-}
-
 async function proxy(req: NextRequest, context: { params: Promise<{ path: string[] }> }): Promise<NextResponse> {
   const { path } = await context.params;
-  const target = `${backendOrigin()}/api/${path.join("/")}${req.nextUrl.search}`;
+  const target = `${apiOrigin()}/api/${path.join("/")}${req.nextUrl.search}`;
   const headers = new Headers();
   req.headers.forEach((value, key) => {
     if (!HOP_BY_HOP.has(key.toLowerCase()) && key.toLowerCase() !== "accept-encoding") headers.set(key, value);
