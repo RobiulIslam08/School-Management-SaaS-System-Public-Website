@@ -5,6 +5,36 @@ import { AdmissionSlip, type SlipSchool } from "@/components/admission-slip";
 import type { ClassItem, Lang } from "@/lib/types";
 
 const field = "mt-1 h-10 w-full rounded-md border border-line bg-card px-3 text-sm";
+const fieldBad = `${field} border-red-700 ring-1 ring-red-700`;
+
+type FieldErrors = Record<string, string>;
+
+const SERVER_KEY: Record<string, string> = {
+  "guardian.guardianName": "guardianName",
+  "guardian.guardianNameBn": "guardianNameBn",
+  "guardian.phone": "guardianPhone",
+  "guardian.fatherName": "fatherName",
+  "guardian.fatherNameBn": "fatherNameBn",
+  "guardian.fatherPhone": "fatherPhone",
+  "guardian.motherName": "motherName",
+  "guardian.motherNameBn": "motherNameBn",
+  "guardian.motherPhone": "motherPhone",
+  "guardian.nid": "nid",
+  "guardian.relation": "relation",
+  "guardian.occupation": "occupation",
+};
+
+function digits(value: string, max: number) {
+  return value.replace(/\D/g, "").slice(0, max);
+}
+
+function focusField(id: string) {
+  requestAnimationFrame(() => {
+    const node = document.getElementById(id);
+    node?.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (node instanceof HTMLElement) node.focus();
+  });
+}
 
 type Address = {
   holding: string;
@@ -28,6 +58,7 @@ export function ApplyForm({ classes, lang, year, school }: { classes: ClassItem[
   const bn = lang === "bn";
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
+  const [errors, setErrors] = useState<FieldErrors>({});
   const [done, setDone] = useState(false);
   const [applicationId, setApplicationId] = useState("");
   const [samePermanent, setSamePermanent] = useState(true);
@@ -62,8 +93,66 @@ export function ApplyForm({ classes, lang, year, school }: { classes: ClassItem[
     occupation: "",
   });
 
+  function clearError(key: string) {
+    setErrors((current) => {
+      if (!current[key]) return current;
+      const next = { ...current };
+      delete next[key];
+      return next;
+    });
+  }
+
   function set<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     setForm((current) => ({ ...current, [key]: value }));
+    clearError(key);
+  }
+
+  function labelFor(key: string) {
+    const labels: Record<string, [string, string]> = {
+      name: ["নাম (ইংরেজিতে)", "Name (English)"],
+      nameBn: ["নাম (বাংলায়)", "Name (বাংলায়)"],
+      dob: ["জন্মতারিখ", "Date of birth"],
+      birthRegNo: ["জন্মনিবন্ধন", "Birth registration"],
+      phone: ["ফোন", "Phone"],
+      email: ["ইমেইল", "Email"],
+      photoUrl: ["ছবি", "Photo"],
+      classId: ["ক্লাস", "Class"],
+      fatherNameBn: ["বাবার নাম (বাংলায়)", "Father's name (বাংলায়)"],
+      fatherPhone: ["বাবার ফোন", "Father's phone"],
+      motherNameBn: ["মায়ের নাম (বাংলায়)", "Mother's name (বাংলায়)"],
+      motherPhone: ["মায়ের ফোন", "Mother's phone"],
+      guardianName: ["অভিভাবকের নাম (ইংরেজিতে)", "Guardian name (English)"],
+      guardianNameBn: ["অভিভাবকের নাম (বাংলায়)", "Guardian name (বাংলায়)"],
+      guardianPhone: ["অভিভাবকের ফোন", "Guardian phone"],
+      nid: ["জাতীয় পরিচয়পত্র", "National ID"],
+    };
+    const pair = labels[key];
+    return pair ? pair[bn ? 0 : 1] : key;
+  }
+
+  function explain(key: string) {
+    const copy: Record<string, [string, string]> = {
+      name: ["নাম অন্তত ২ অক্ষর দিন।", "Enter at least 2 characters."],
+      guardianName: ["অভিভাবকের নাম অন্তত ২ অক্ষর দিন।", "Enter at least 2 characters."],
+      guardianPhone: ["অভিভাবকের ফোনে অন্তত ৬টি সংখ্যা দিন।", "Enter at least 6 digits."],
+      email: ["ইমেইল ঠিক নয়। খালি রাখতে পারেন।", "This email is not valid. You can leave it empty."],
+      dob: ["ক্যালেন্ডার থেকে জন্মতারিখ বেছে নিন।", "Pick the date of birth from the calendar."],
+      photoUrl: ["ছবি JPG, PNG বা WebP, ১৮০ কিলোবাইটের মধ্যে।", "Use a JPG, PNG, or WebP under 180 KB."],
+      classId: ["ক্লাস বেছে নিন।", "Choose a class."],
+    };
+    const pair = copy[key];
+    return pair ? pair[bn ? 0 : 1] : bn ? "এই ঘর ঠিক করুন।" : "Check this field.";
+  }
+
+  function problems() {
+    const next: FieldErrors = {};
+    if (form.name.trim().length < 2) next.name = explain("name");
+    if (!form.classId) next.classId = explain("classId");
+    if (form.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) next.email = explain("email");
+    if (form.dob && !/^\d{4}-\d{2}-\d{2}$/.test(form.dob)) next.dob = explain("dob");
+    if (form.guardianName.trim().length < 2) next.guardianName = explain("guardianName");
+    if (digits(form.guardianPhone, 14).length < 6) next.guardianPhone = explain("guardianPhone");
+    return next;
   }
 
   function setAddress(key: keyof Address, value: string, permanent = false) {
@@ -76,9 +165,11 @@ export function ApplyForm({ classes, lang, year, school }: { classes: ClassItem[
   function onPhoto(file: File | undefined) {
     if (!file) return;
     if (file.size > 180 * 1024) {
-      setMessage(bn ? "ছবি ১৮০ কিলোবাইটের মধ্যে রাখুন।" : "Keep the photo under 180 KB.");
+      setErrors((current) => ({ ...current, photoUrl: explain("photoUrl") }));
+      focusField("photoUrl");
       return;
     }
+    clearError("photoUrl");
     const reader = new FileReader();
     reader.onload = () => set("photoUrl", String(reader.result ?? ""));
     reader.readAsDataURL(file);
@@ -86,10 +177,20 @@ export function ApplyForm({ classes, lang, year, school }: { classes: ClassItem[
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
+    const local = problems();
+    if (Object.keys(local).length) {
+      setErrors(local);
+      const names = Object.keys(local).map(labelFor).join(", ");
+      setMessage(bn ? `এই ঘরগুলো ঠিক করুন: ${names}` : `Check these fields: ${names}`);
+      focusField(Object.keys(local)[0]);
+      return;
+    }
     setPending(true);
     setMessage("");
+    setErrors({});
     const address = form.address;
     const permanent = samePermanent ? address : form.permanentAddress;
+    const group = ["Science", "Business", "Humanities", "None"].includes(form.group) ? form.group : "None";
     try {
     const response = await fetch("/api/v1/public/admissions", {
       method: "POST",
@@ -101,7 +202,7 @@ export function ApplyForm({ classes, lang, year, school }: { classes: ClassItem[
         academicYear: year || String(new Date().getFullYear()),
         classId: form.classId,
         section: form.section || "A",
-        group: form.group || "None",
+        group,
         phone: form.phone,
         email: form.email,
         dob: form.dob,
@@ -128,9 +229,26 @@ export function ApplyForm({ classes, lang, year, school }: { classes: ClassItem[
         },
       }),
     });
-    const json = (await response.json().catch(() => ({}))) as { message?: string; data?: { studentId?: string } };
+    const json = (await response.json().catch(() => ({}))) as {
+      message?: string;
+      data?: { studentId?: string };
+      errors?: Array<{ field?: string; message?: string }> | null;
+    };
     if (!response.ok) {
-      setMessage(json.message || (bn ? "আবেদন জমা হয়নি।" : "The application was not saved."));
+      const next: FieldErrors = {};
+      for (const item of json.errors ?? []) {
+        if (!item.field) continue;
+        const key = SERVER_KEY[item.field] ?? item.field;
+        next[key] = explain(key);
+      }
+      if (Object.keys(next).length) {
+        setErrors(next);
+        const names = Object.keys(next).map(labelFor).join(", ");
+        setMessage(bn ? `এই ঘরগুলো ঠিক করুন: ${names}` : `Check these fields: ${names}`);
+        focusField(Object.keys(next)[0]);
+      } else {
+        setMessage(json.message || (bn ? "আবেদন জমা হয়নি।" : "The application was not saved."));
+      }
       return;
     }
     setApplicationId(json.data?.studentId ?? "");
@@ -143,6 +261,26 @@ export function ApplyForm({ classes, lang, year, school }: { classes: ClassItem[
   }
 
   const selected = classes.find((item) => item._id === form.classId);
+  const dobMax = `${new Date().getFullYear()}-12-31`;
+
+  function control(id: string) {
+    const invalid = Boolean(errors[id]);
+    return {
+      id,
+      className: invalid ? fieldBad : field,
+      "aria-invalid": invalid || undefined,
+      "aria-describedby": invalid ? `${id}-error` : undefined,
+    };
+  }
+
+  function hint(id: string) {
+    if (!errors[id]) return null;
+    return (
+      <span id={`${id}-error`} className="mt-1 block text-xs font-medium text-red-700">
+        {errors[id]}
+      </span>
+    );
+  }
 
   if (done) {
     const course = [selected?.name, form.section].filter(Boolean).join(" · ");
@@ -165,7 +303,6 @@ export function ApplyForm({ classes, lang, year, school }: { classes: ClassItem[
         </div>
         <AdmissionSlip
           school={school}
-          lang={lang}
           data={{
             studentId: applicationId,
             name: form.name,
@@ -193,7 +330,7 @@ export function ApplyForm({ classes, lang, year, school }: { classes: ClassItem[
   }
 
   return (
-    <form className="sheet mx-auto max-w-3xl space-y-6 px-4 py-5 md:px-6" onSubmit={submit} suppressHydrationWarning>
+    <form noValidate className="sheet mx-auto max-w-3xl space-y-6 px-4 py-5 md:px-6" onSubmit={submit} suppressHydrationWarning>
       <p className="text-sm leading-6 text-muted">
         {bn
           ? `${year} শিক্ষাবর্ষ। সব ঘর এই এক ফর্মে। ধাপ নেই। জমা দিলে আবেদন অপেক্ষমাণ থাকবে। স্কুল অনুমোদন করলে তবে ভর্তি। ফি নগদ, বিকাশ, নগদ, রকেট, ব্যাংক বা চেকে অফিসে।`
@@ -203,39 +340,49 @@ export function ApplyForm({ classes, lang, year, school }: { classes: ClassItem[
       <fieldset className="space-y-3">
         <legend className="text-sm font-semibold">{bn ? "শিক্ষার্থী" : "Student"}</legend>
         <div className="grid gap-3 sm:grid-cols-2">
-          <label className="block text-sm sm:col-span-2">{bn ? "নাম" : "Name"}
-            <input required minLength={2} className={field} value={form.name} onChange={(event) => set("name", event.target.value)} />
+          <label className="block text-sm sm:col-span-2" htmlFor="name">{bn ? "নাম (ইংরেজিতে)" : "Name (English)"}
+            <input required minLength={2} autoComplete="name" {...control("name")} value={form.name} onChange={(event) => set("name", event.target.value)} />
+            {hint("name")}
           </label>
-          <label className="block text-sm sm:col-span-2">{bn ? "নাম (বাংলা)" : "Name in Bangla"}
-            <input className={field} value={form.nameBn} onChange={(event) => set("nameBn", event.target.value)} />
+          <label className="block text-sm sm:col-span-2" htmlFor="nameBn">{bn ? "নাম (বাংলায়)" : "Name (বাংলায়)"}
+            <input lang="bn" autoComplete="off" {...control("nameBn")} value={form.nameBn} onChange={(event) => set("nameBn", event.target.value)} />
+            {hint("nameBn")}
           </label>
-          <label className="block text-sm">{bn ? "লিঙ্গ" : "Gender"}
-            <select className={field} value={form.gender} onChange={(event) => set("gender", event.target.value)}>
+          <label className="block text-sm" htmlFor="gender">{bn ? "লিঙ্গ" : "Gender"}
+            <select {...control("gender")} value={form.gender} onChange={(event) => set("gender", event.target.value)}>
               <option value="male">{bn ? "ছাত্র" : "Male"}</option>
               <option value="female">{bn ? "ছাত্রী" : "Female"}</option>
               <option value="other">{bn ? "অন্যান্য" : "Other"}</option>
             </select>
+            {hint("gender")}
           </label>
-          <label className="block text-sm">{bn ? "জন্মতারিখ" : "Date of birth"}
-            <input type="text" inputMode="numeric" placeholder="YYYY-MM-DD" className={field} value={form.dob} onChange={(event) => set("dob", event.target.value)} />
+          <label className="block text-sm" htmlFor="dob">{bn ? "জন্মতারিখ" : "Date of birth"}
+            <input type="date" min="1990-01-01" max={dobMax} autoComplete="bday" {...control("dob")} value={form.dob} onChange={(event) => set("dob", event.target.value)} />
+            {hint("dob")}
           </label>
-          <label className="block text-sm">{bn ? "জন্মনিবন্ধন" : "Birth registration"}
-            <input className={field} value={form.birthRegNo} onChange={(event) => set("birthRegNo", event.target.value)} />
+          <label className="block text-sm" htmlFor="birthRegNo">{bn ? "জন্মনিবন্ধন" : "Birth registration"}
+            <input inputMode="numeric" autoComplete="off" placeholder="01234567890123456" {...control("birthRegNo")} value={form.birthRegNo} onChange={(event) => set("birthRegNo", digits(event.target.value, 17))} />
+            {hint("birthRegNo")}
           </label>
-          <label className="block text-sm">{bn ? "রক্তের গ্রুপ" : "Blood group"}
-            <input className={field} value={form.bloodGroup} onChange={(event) => set("bloodGroup", event.target.value)} />
+          <label className="block text-sm" htmlFor="bloodGroup">{bn ? "রক্তের গ্রুপ" : "Blood group"}
+            <input {...control("bloodGroup")} value={form.bloodGroup} onChange={(event) => set("bloodGroup", event.target.value)} />
+            {hint("bloodGroup")}
           </label>
-          <label className="block text-sm">{bn ? "ধর্ম" : "Religion"}
-            <input className={field} value={form.religion} onChange={(event) => set("religion", event.target.value)} />
+          <label className="block text-sm" htmlFor="religion">{bn ? "ধর্ম" : "Religion"}
+            <input {...control("religion")} value={form.religion} onChange={(event) => set("religion", event.target.value)} />
+            {hint("religion")}
           </label>
-          <label className="block text-sm">{bn ? "ফোন" : "Phone"}
-            <input className={field} inputMode="tel" value={form.phone} onChange={(event) => set("phone", event.target.value)} />
+          <label className="block text-sm" htmlFor="phone">{bn ? "ফোন" : "Phone"}
+            <input inputMode="numeric" autoComplete="tel" placeholder="01XXXXXXXXX" {...control("phone")} value={form.phone} onChange={(event) => set("phone", digits(event.target.value, 14))} />
+            {hint("phone")}
           </label>
-          <label className="block text-sm">{bn ? "ইমেইল" : "Email"}
-            <input type="email" className={field} value={form.email} onChange={(event) => set("email", event.target.value)} />
+          <label className="block text-sm" htmlFor="email">{bn ? "ইমেইল" : "Email"}
+            <input type="email" autoComplete="email" {...control("email")} value={form.email} onChange={(event) => set("email", event.target.value)} />
+            {hint("email")}
           </label>
-          <label className="block text-sm sm:col-span-2">{bn ? "ছবি (ঐচ্ছিক, ছোট)" : "Photo (optional, small)"}
-            <input className={field} type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => onPhoto(event.target.files?.[0])} />
+          <label className="block text-sm sm:col-span-2" htmlFor="photoUrl">{bn ? "ছবি (ঐচ্ছিক, ছোট)" : "Photo (optional, small)"}
+            <input {...control("photoUrl")} type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => onPhoto(event.target.files?.[0])} />
+            {hint("photoUrl")}
           </label>
         </div>
       </fieldset>
@@ -243,10 +390,10 @@ export function ApplyForm({ classes, lang, year, school }: { classes: ClassItem[
       <fieldset className="space-y-3">
         <legend className="text-sm font-semibold">{bn ? "ক্লাস" : "Class"}</legend>
         <div className="grid gap-3 sm:grid-cols-2">
-          <label className="block text-sm">{bn ? "ক্লাস" : "Class"}
+          <label className="block text-sm" htmlFor="classId">{bn ? "ক্লাস" : "Class"}
             <select
               required
-              className={field}
+              {...control("classId")}
               value={form.classId}
               onChange={(event) => {
                 const next = classes.find((item) => item._id === event.target.value);
@@ -257,6 +404,7 @@ export function ApplyForm({ classes, lang, year, school }: { classes: ClassItem[
             >
               {classes.map((item) => <option key={item._id} value={item._id}>{item.name}</option>)}
             </select>
+            {hint("classId")}
           </label>
           <label className="block text-sm">{bn ? "শাখা" : "Section"}
             <select className={field} value={form.section} onChange={(event) => set("section", event.target.value)}>
@@ -281,38 +429,49 @@ export function ApplyForm({ classes, lang, year, school }: { classes: ClassItem[
       <fieldset className="space-y-3">
         <legend className="text-sm font-semibold">{bn ? "বাবা, মা ও অভিভাবক" : "Parents and guardian"}</legend>
         <div className="grid gap-3 sm:grid-cols-2">
-          <label className="block text-sm">{bn ? "বাবার নাম" : "Father's name"}
-            <input className={field} value={form.fatherName} onChange={(event) => set("fatherName", event.target.value)} />
+          <label className="block text-sm" htmlFor="fatherName">{bn ? "বাবার নাম (ইংরেজিতে)" : "Father's name (English)"}
+            <input autoComplete="off" {...control("fatherName")} value={form.fatherName} onChange={(event) => set("fatherName", event.target.value)} />
+            {hint("fatherName")}
           </label>
-          <label className="block text-sm">{bn ? "বাবার নাম (বাংলা)" : "Father's name in Bangla"}
-            <input className={field} value={form.fatherNameBn} onChange={(event) => set("fatherNameBn", event.target.value)} />
+          <label className="block text-sm" htmlFor="fatherNameBn">{bn ? "বাবার নাম (বাংলায়)" : "Father's name (বাংলায়)"}
+            <input lang="bn" autoComplete="off" {...control("fatherNameBn")} value={form.fatherNameBn} onChange={(event) => set("fatherNameBn", event.target.value)} />
+            {hint("fatherNameBn")}
           </label>
-          <label className="block text-sm">{bn ? "বাবার ফোন" : "Father's phone"}
-            <input className={field} inputMode="tel" value={form.fatherPhone} onChange={(event) => set("fatherPhone", event.target.value)} />
+          <label className="block text-sm" htmlFor="fatherPhone">{bn ? "বাবার ফোন" : "Father's phone"}
+            <input inputMode="numeric" autoComplete="tel" placeholder="01XXXXXXXXX" {...control("fatherPhone")} value={form.fatherPhone} onChange={(event) => set("fatherPhone", digits(event.target.value, 14))} />
+            {hint("fatherPhone")}
           </label>
-          <label className="block text-sm">{bn ? "মায়ের নাম" : "Mother's name"}
-            <input className={field} value={form.motherName} onChange={(event) => set("motherName", event.target.value)} />
+          <label className="block text-sm" htmlFor="motherName">{bn ? "মায়ের নাম (ইংরেজিতে)" : "Mother's name (English)"}
+            <input autoComplete="off" {...control("motherName")} value={form.motherName} onChange={(event) => set("motherName", event.target.value)} />
+            {hint("motherName")}
           </label>
-          <label className="block text-sm">{bn ? "মায়ের নাম (বাংলা)" : "Mother's name in Bangla"}
-            <input className={field} value={form.motherNameBn} onChange={(event) => set("motherNameBn", event.target.value)} />
+          <label className="block text-sm" htmlFor="motherNameBn">{bn ? "মায়ের নাম (বাংলায়)" : "Mother's name (বাংলায়)"}
+            <input lang="bn" autoComplete="off" {...control("motherNameBn")} value={form.motherNameBn} onChange={(event) => set("motherNameBn", event.target.value)} />
+            {hint("motherNameBn")}
           </label>
-          <label className="block text-sm">{bn ? "মায়ের ফোন" : "Mother's phone"}
-            <input className={field} inputMode="tel" value={form.motherPhone} onChange={(event) => set("motherPhone", event.target.value)} />
+          <label className="block text-sm" htmlFor="motherPhone">{bn ? "মায়ের ফোন" : "Mother's phone"}
+            <input inputMode="numeric" autoComplete="tel" placeholder="01XXXXXXXXX" {...control("motherPhone")} value={form.motherPhone} onChange={(event) => set("motherPhone", digits(event.target.value, 14))} />
+            {hint("motherPhone")}
           </label>
-          <label className="block text-sm">{bn ? "অভিভাবকের নাম" : "Guardian name"}
-            <input required minLength={2} className={field} value={form.guardianName} onChange={(event) => set("guardianName", event.target.value)} />
+          <label className="block text-sm" htmlFor="guardianName">{bn ? "অভিভাবকের নাম (ইংরেজিতে)" : "Guardian name (English)"}
+            <input required minLength={2} autoComplete="name" {...control("guardianName")} value={form.guardianName} onChange={(event) => set("guardianName", event.target.value)} />
+            {hint("guardianName")}
           </label>
-          <label className="block text-sm">{bn ? "অভিভাবকের নাম (বাংলা)" : "Guardian name in Bangla"}
-            <input className={field} value={form.guardianNameBn} onChange={(event) => set("guardianNameBn", event.target.value)} />
+          <label className="block text-sm" htmlFor="guardianNameBn">{bn ? "অভিভাবকের নাম (বাংলায়)" : "Guardian name (বাংলায়)"}
+            <input lang="bn" autoComplete="off" {...control("guardianNameBn")} value={form.guardianNameBn} onChange={(event) => set("guardianNameBn", event.target.value)} />
+            {hint("guardianNameBn")}
           </label>
-          <label className="block text-sm">{bn ? "সম্পর্ক" : "Relation"}
-            <input className={field} value={form.relation} onChange={(event) => set("relation", event.target.value)} />
+          <label className="block text-sm" htmlFor="relation">{bn ? "সম্পর্ক" : "Relation"}
+            <input {...control("relation")} value={form.relation} onChange={(event) => set("relation", event.target.value)} />
+            {hint("relation")}
           </label>
-          <label className="block text-sm">{bn ? "অভিভাবকের ফোন" : "Guardian phone"}
-            <input required minLength={6} className={field} inputMode="tel" value={form.guardianPhone} onChange={(event) => set("guardianPhone", event.target.value)} />
+          <label className="block text-sm" htmlFor="guardianPhone">{bn ? "অভিভাবকের ফোন" : "Guardian phone"}
+            <input required inputMode="numeric" autoComplete="tel" placeholder="01XXXXXXXXX" {...control("guardianPhone")} value={form.guardianPhone} onChange={(event) => set("guardianPhone", digits(event.target.value, 14))} />
+            {hint("guardianPhone")}
           </label>
-          <label className="block text-sm">{bn ? "জাতীয় পরিচয়পত্র" : "National ID"}
-            <input className={field} value={form.nid} onChange={(event) => set("nid", event.target.value)} />
+          <label className="block text-sm" htmlFor="nid">{bn ? "জাতীয় পরিচয়পত্র" : "National ID"}
+            <input inputMode="numeric" autoComplete="off" {...control("nid")} value={form.nid} onChange={(event) => set("nid", digits(event.target.value, 17))} />
+            {hint("nid")}
           </label>
           <label className="block text-sm">{bn ? "পেশা" : "Occupation"}
             <input className={field} value={form.occupation} onChange={(event) => set("occupation", event.target.value)} />
@@ -320,7 +479,7 @@ export function ApplyForm({ classes, lang, year, school }: { classes: ClassItem[
         </div>
       </fieldset>
 
-      {message ? <p className="text-sm text-red-700">{message}</p> : null}
+      {message ? <p className="text-sm font-medium text-red-700" role="alert">{message}</p> : null}
       <p className="text-xs leading-5 text-muted">
         {bn
           ? "সিট নিশ্চিত নয়। অনুমোদনের আগে ভর্তি হয় না। ভর্তি ফি অফিসে। রসিদ অফিস থেকে নিন।"

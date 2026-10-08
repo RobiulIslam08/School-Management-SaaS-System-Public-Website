@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { MobileTasks } from "@/components/mobile-tasks";
 import { SiteNav } from "@/components/site-nav";
 import type { Lang, PublicSite } from "@/lib/types";
 import { resolvePhoto } from "@/lib/media";
@@ -101,11 +102,7 @@ export function Shell({ site, lang, children }: { site: PublicSite; lang: Lang; 
           </div>
         </div>
       </footer>
-      <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-3 border-t border-line bg-card lg:hidden" aria-label={lang === "bn" ? "দ্রুত কাজ" : "Quick tasks"}>
-        <Link className="grid h-14 place-items-center text-sm font-semibold" href="/results">{lang === "bn" ? "ফলাফল" : "Results"}</Link>
-        <Link className="grid h-14 place-items-center bg-brand text-sm font-semibold text-on-brand" href="/admission/apply">{lang === "bn" ? "ভর্তি" : "Apply"}</Link>
-        <Link className="grid h-14 place-items-center text-sm font-semibold" href="/notices">{lang === "bn" ? "নোটিশ" : "Notices"}</Link>
-      </nav>
+      <MobileTasks lang={lang} />
     </>
   );
 }

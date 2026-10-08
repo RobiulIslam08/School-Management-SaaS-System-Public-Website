@@ -1,5 +1,3 @@
-import type { Lang } from "@/lib/types";
-
 export interface SlipAddress {
   holding?: string;
   area?: string;
@@ -41,75 +39,40 @@ export interface SlipSchool {
   accent: string;
 }
 
+/** Same English labels as the dashboard admission form. The public sheet does not switch language. */
 const COPY = {
-  bn: {
-    eiin: "ইআইআইএন",
-    year: "শিক্ষাবর্ষ",
-    photo: "শিক্ষার্থীর ছবি",
-    title: "Student's Admission Form",
-    student: "শিক্ষার্থী",
-    studentName: "Student's Name",
-    id: "আইডি",
-    phone: "ফোন",
-    email: "ইমেইল",
-    dob: "জন্ম তারিখ",
-    birthReg: "জন্মনিবন্ধন নং",
-    religion: "ধর্ম",
-    blood: "রক্তের গ্রুপ",
-    course: "Course / Class",
-    guardian: "অভিভাবক",
-    father: "Father's Name",
-    fatherPhone: "Father's Mobile",
-    mother: "Mother's Name",
-    motherPhone: "Mother's Mobile",
-    present: "Present Address",
-    permanent: "Permanent Address",
-    house: "House",
-    village: "Village",
-    upazila: "উপজেলা",
-    post: "Post Office",
-    district: "জেলা",
-    declaration:
-      "আমি ঘোষণা করিতেছি যে, উপরোক্ত সকল তথ্য সত্য ও সঠিক। কোনো তথ্য মিথ্যা প্রমাণিত হইলে কর্তৃপক্ষের সিদ্ধান্তই চূড়ান্ত বলিয়া গণ্য হইবে।",
-    guardianSign: "অভিভাবক",
-    signHint: "স্বাক্ষর ও তারিখ",
-    office: "অধ্যক্ষ/সচিব",
-    sealHint: "সিল ও স্বাক্ষর",
-  },
-  en: {
-    eiin: "EIIN",
-    year: "Year",
-    photo: "Student photo",
-    title: "Student's Admission Form",
-    student: "Student",
-    studentName: "Student's Name",
-    id: "ID",
-    phone: "Phone",
-    email: "Email",
-    dob: "Date of birth",
-    birthReg: "Birth registration no.",
-    religion: "Religion",
-    blood: "Blood group",
-    course: "Course / Class",
-    guardian: "Guardian",
-    father: "Father's Name",
-    fatherPhone: "Father's Mobile",
-    mother: "Mother's Name",
-    motherPhone: "Mother's Mobile",
-    present: "Present Address",
-    permanent: "Permanent Address",
-    house: "House",
-    village: "Village",
-    upazila: "Upazila",
-    post: "Post Office",
-    district: "District",
-    declaration:
-      "I hereby declare that the information given above is true and correct. If any information is found false, the decision of the school authority shall be final.",
-    guardianSign: "Guardian",
-    signHint: "Signature & date",
-    office: "Principal",
-    sealHint: "Seal & signature",
-  },
+  eiin: "EIIN",
+  year: "Academic year",
+  photo: "Student photo",
+  title: "Student's Admission Form",
+  student: "Student",
+  studentName: "Student's Name",
+  id: "Student ID",
+  phone: "Mobile",
+  email: "Email",
+  dob: "Date of birth",
+  birthReg: "Birth registration no.",
+  religion: "Religion",
+  blood: "Blood group",
+  course: "Course / Class",
+  guardian: "Guardian",
+  father: "Father's Name",
+  fatherPhone: "Father's Mobile",
+  mother: "Mother's Name",
+  motherPhone: "Mother's Mobile",
+  present: "Present Address",
+  permanent: "Permanent Address",
+  house: "House",
+  village: "Village",
+  upazila: "Upazila",
+  post: "Post Office",
+  district: "District",
+  declaration:
+    "I hereby declare that the information given above is true and correct. If any information is found false, the decision of the school authority shall be final.",
+  guardianSign: "Guardian",
+  signHint: "Signature & date",
+  office: "Principal",
+  sealHint: "Seal & signature",
 } as const;
 
 function dash(value?: string) {
@@ -144,8 +107,8 @@ function AddressPanel({ title, address, accent, labels }: {
   );
 }
 
-export function AdmissionSlip({ school, data, lang }: { school: SlipSchool; data: SlipData; lang: Lang }) {
-  const t = COPY[lang];
+export function AdmissionSlip({ school, data }: { school: SlipSchool; data: SlipData }) {
+  const t = COPY;
   const accent = school.accent || "#14532d";
   const schoolName = school.name?.trim() || "School";
 
