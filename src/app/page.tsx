@@ -404,6 +404,13 @@ export default async function HomePage() {
               <h3>{bn ? "ফলাফল" : "Results"}</h3>
               <p>{bn ? "প্রকাশিত পরীক্ষা শিক্ষার্থী আইডি দিয়ে।" : "A published exam, with a student ID."}</p>
             </Link>
+            {config.receiptLookupEnabled ? (
+              <Link href="/receipts" className="path-card">
+                <span>05</span>
+                <h3>{bn ? "রসিদ" : "Receipts"}</h3>
+                <p>{bn ? "জমার ইতিহাস শিক্ষার্থী আইডি দিয়ে। রসিদ এই পাতা থেকে।" : "Payment history with a student ID. The receipt prints from this page."}</p>
+              </Link>
+            ) : null}
           </div>
           {downloads.length ? (
             <ul className="download-row">

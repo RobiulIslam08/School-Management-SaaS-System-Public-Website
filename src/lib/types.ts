@@ -214,6 +214,7 @@ export interface PublicSite {
     admitBodyEn: string;
     desks: DeskCopy[];
     resultLookupEnabled: boolean;
+    receiptLookupEnabled: boolean;
     publicAdmission: boolean;
     meritListEnabled: boolean;
     seoDescriptionBn: string;

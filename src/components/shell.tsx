@@ -76,6 +76,7 @@ export function Shell({ site, lang, children }: { site: PublicSite; lang: Lang; 
               <ul className="mt-2 space-y-1 text-muted">
                 <li><Link href="/">{lang === "bn" ? "হোম" : "Home"}</Link></li>
                 <li><Link href="/results">{lang === "bn" ? "ফলাফল" : "Results"}</Link></li>
+                {config.receiptLookupEnabled ? <li><Link href="/receipts">{lang === "bn" ? "রসিদ" : "Receipts"}</Link></li> : null}
                 <li><Link href="/admission/apply">{lang === "bn" ? "ভর্তি আবেদন" : "Apply"}</Link></li>
                 <li><Link href="/notices">{lang === "bn" ? "নোটিশ" : "Notices"}</Link></li>
                 <li><Link href="/contact">{lang === "bn" ? "যোগাযোগ" : "Contact"}</Link></li>

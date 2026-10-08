@@ -1067,6 +1067,9 @@ body {
 @media (min-width: 800px) {
   .path-grid { grid-template-columns: repeat(4, 1fr); }
 }
+@media (min-width: 1100px) {
+  .path-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
 .path-card {
   min-height: 9.5rem;
   border: 1px solid var(--line);
@@ -1897,6 +1900,34 @@ body {
   }
   body:has(.public-results) .no-print,
   body:has(.public-results) .no-print * {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  @page fee-slip {
+    size: A4 portrait;
+    margin: 6mm;
+  }
+
+  body:has(.public-receipts) * { visibility: hidden !important; }
+  body:has(.public-receipts) .fee-receipt-sheet,
+  body:has(.public-receipts) .fee-receipt-sheet * { visibility: visible !important; }
+  body:has(.public-receipts) .fee-receipt-sheet {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    page: fee-slip;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body:has(.public-receipts) .no-print,
+  body:has(.public-receipts) .no-print * {
     display: none !important;
     visibility: hidden !important;
   }
