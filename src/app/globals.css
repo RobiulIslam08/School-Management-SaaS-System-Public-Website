@@ -1879,6 +1879,14 @@ body {
 
 @media print {
   header, footer, nav, .ticker-track { display: none !important; }
+  /* The site chrome uses header/footer. Printed sheets have their own. */
+  .fee-receipt-sheet header,
+  .admission-sheet header,
+  .marksheet-sheet header {
+    display: grid !important;
+  }
+  .marksheet-sheet header { display: block !important; }
+  .fee-receipt-sheet footer { display: block !important; }
   body { background: white; }
   .result-sheet, .notice-sheet { border: 0; box-shadow: none; }
   @page { size: A4 portrait; margin: 10mm; }
