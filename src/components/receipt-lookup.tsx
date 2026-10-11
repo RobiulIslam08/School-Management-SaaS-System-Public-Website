@@ -160,7 +160,7 @@ export function ReceiptLookup({ lang, enabled, school }: { lang: Lang; enabled: 
 
   function openReceipt(row: ReceiptRow, andPrint = false) {
     if (!payload) return;
-    const studentName = lang === "bn" && payload.student.nameBn.trim() ? payload.student.nameBn : payload.student.name;
+    const studentName = payload.student.name;
     setPreview({
       receiptNo: row.receiptNo,
       lines: row.lines,
@@ -330,7 +330,7 @@ export function ReceiptLookup({ lang, enabled, school }: { lang: Lang; enabled: 
               </button>
             </div>
           </div>
-          <PublicReceipt item={preview} school={school} lang={lang} />
+          <PublicReceipt item={preview} school={school} />
         </div>
       ) : null}
     </div>

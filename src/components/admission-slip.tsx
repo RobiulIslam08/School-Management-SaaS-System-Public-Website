@@ -18,6 +18,7 @@ export interface SlipData {
   bloodGroup?: string;
   photoUrl?: string;
   courseName?: string;
+  section?: string;
   fatherName?: string;
   fatherNameBn?: string;
   fatherPhone?: string;
@@ -55,6 +56,7 @@ const COPY = {
   religion: "Religion",
   blood: "Blood group",
   course: "Course / Class",
+  section: "Section",
   guardian: "Guardian",
   father: "Father's Name",
   fatherPhone: "Father's Mobile",
@@ -163,6 +165,7 @@ export function AdmissionSlip({ school, data }: { school: SlipSchool; data: Slip
               <FieldCell label={t.religion} value={data.religion} />
               <FieldCell label={t.blood} value={data.bloodGroup} />
               <FieldCell label={t.course} value={data.courseName} wide />
+              <FieldCell label={t.section} value={data.section} wide />
             </div>
           </section>
 

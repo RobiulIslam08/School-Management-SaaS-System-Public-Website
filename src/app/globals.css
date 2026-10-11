@@ -1945,32 +1945,23 @@ body {
   body:has(.admission-print-root) .admission-sheet,
   body:has(.admission-print-root) .admission-sheet * { visibility: visible !important; }
   body:has(.admission-print-root) .admission-sheet {
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
     width: 100% !important;
     max-width: none !important;
-    height: 277mm !important;
-    max-height: 277mm !important;
+    height: auto !important;
+    max-height: none !important;
     margin: 0 !important;
     box-shadow: none !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow: hidden !important;
-    break-inside: avoid;
-    page-break-inside: avoid;
+    display: block !important;
+    overflow: visible !important;
+    break-inside: auto;
+    page-break-inside: auto;
   }
-  body:has(.admission-print-root) .admission-frame,
-  body:has(.admission-print-root) .admission-inner {
-    display: flex !important;
-    flex: 1 1 auto !important;
-    flex-direction: column !important;
-    min-height: 0 !important;
-  }
-  body:has(.admission-print-root) .admission-signs { margin-top: auto !important; }
   body:has(.admission-print-root) .admission-grid,
-  body:has(.admission-print-root) .admission-addresses { grid-template-columns: 1fr 1fr !important; }
-  body:has(.admission-print-root) .admission-cell.is-wide { grid-column: 1 / -1 !important; }
+  body:has(.admission-print-root) .admission-addresses { grid-template-columns: 1fr !important; }
+  body:has(.admission-print-root) .admission-cell.is-wide { grid-column: auto !important; }
   body:has(.admission-print-root) .no-print,
   body:has(.admission-print-root) .no-print * {
     display: none !important;

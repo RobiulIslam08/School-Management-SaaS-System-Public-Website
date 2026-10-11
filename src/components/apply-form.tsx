@@ -283,7 +283,7 @@ export function ApplyForm({ classes, lang, year, school }: { classes: ClassItem[
   }
 
   if (done) {
-    const course = [selected?.name, form.section].filter(Boolean).join(" · ");
+    const course = selected?.name ?? "";
     const address = form.address;
     const permanent = samePermanent ? address : form.permanentAddress;
     return (
@@ -315,6 +315,7 @@ export function ApplyForm({ classes, lang, year, school }: { classes: ClassItem[
             bloodGroup: form.bloodGroup,
             photoUrl: form.photoUrl,
             courseName: course,
+            section: form.section,
             fatherName: form.fatherName,
             fatherNameBn: form.fatherNameBn,
             fatherPhone: form.fatherPhone,

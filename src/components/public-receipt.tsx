@@ -1,5 +1,4 @@
 import { amountInWords } from "@/lib/amount-words";
-import type { Lang } from "@/lib/types";
 
 export type PublicReceiptLine = {
   title: string;
@@ -30,52 +29,29 @@ export type ReceiptSchool = {
 const STAMP_MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
 const copy = {
-  bn: {
-    receipt: "রশিদ",
-    moneyReceipt: "টাকা জমার রশিদ",
-    eiin: "EIIN",
-    year: "শিক্ষাবর্ষ",
-    student: "শিক্ষার্থী",
-    studentId: "শিক্ষার্থী আইডি",
-    className: "ক্লাস",
-    date: "তারিখ",
-    receiptNo: "রশিদ নং",
-    method: "মাধ্যম",
-    slNo: "নং",
-    particular: "বিবরণ",
-    taka: "টাকা",
-    grandTotal: "সর্বমোট",
-    inWords: "কথায়",
-    received: "RECEIVED",
-    accountant: "হিসাবরক্ষক",
-    payer: "অভিভাবক/শিক্ষার্থী",
-    footer: "এই রশিদ স্কুল অফিস কর্তৃক ইস্যুকৃত। প্রিন্ট ডায়ালগে Save as PDF বেছে নিন।",
-  },
-  en: {
-    receipt: "Receipt",
-    moneyReceipt: "Payment receipt",
-    eiin: "EIIN",
-    year: "Year",
-    student: "Student",
-    studentId: "Student ID",
-    className: "Class",
-    date: "Date",
-    receiptNo: "Receipt no.",
-    method: "Method",
-    slNo: "No.",
-    particular: "Particulars",
-    taka: "Taka",
-    grandTotal: "Grand total",
-    inWords: "In words",
-    received: "RECEIVED",
-    accountant: "Accountant",
-    payer: "Guardian / student",
-    footer: "Issued by the school office. Choose Save as PDF in the print dialog.",
-  },
+  receipt: "Receipt",
+  moneyReceipt: "Payment receipt",
+  eiin: "EIIN",
+  year: "Year",
+  student: "Student",
+  studentId: "Student ID",
+  className: "Class",
+  date: "Date",
+  receiptNo: "Receipt no.",
+  method: "Method",
+  slNo: "No.",
+  particular: "Particulars",
+  taka: "Taka",
+  grandTotal: "Grand total",
+  inWords: "In words",
+  received: "RECEIVED",
+  accountant: "Accountant",
+  payer: "Guardian / student",
+  footer: "Issued by the school office. Choose Save as PDF in the print dialog.",
 } as const;
 
-function money(n: number, lang: Lang) {
-  return n.toLocaleString(lang === "bn" ? "bn-BD" : "en-BD");
+function money(n: number) {
+  return n.toLocaleString("en-BD");
 }
 
 function parseDate(value?: string): Date | null {
@@ -95,13 +71,13 @@ function stampDate(value?: string): string {
   return `${day} ${STAMP_MONTHS[date.getMonth()]} ${date.getFullYear()}`;
 }
 
-export function PublicReceipt({ item, school, lang }: { item: PublicReceiptSlip; school: ReceiptSchool; lang: Lang }) {
-  const t = copy[lang];
+export function PublicReceipt({ item, school }: { item: PublicReceiptSlip; school: ReceiptSchool }) {
+  const t = copy;
   const schoolName = school.name?.trim() || "School";
   const logoUrl = school.logoUrl?.trim() || "";
   const paid = parseDate(item.date);
   const paidDate = paid
-    ? paid.toLocaleDateString(lang === "bn" ? "bn-BD" : "en-GB", { day: "numeric", month: "long", year: "numeric" })
+    ? paid.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
     : "—";
   const lines = item.lines.filter((line) => line.amount > 0);
   const total = lines.reduce((sum, line) => sum + line.amount, 0);
@@ -182,7 +158,7 @@ export function PublicReceipt({ item, school, lang }: { item: PublicReceiptSlip;
                 <tr key={`${line.title}-${index}`} className="border-b border-[#1c1917]/20">
                   <td className="py-1 tabular-nums print:py-px">{index + 1}</td>
                   <td className="py-1 font-medium print:py-px">{line.title}</td>
-                  <td className="py-1 text-right tabular-nums print:py-px">{money(line.amount, lang)}</td>
+                  <td className="py-1 text-right tabular-nums print:py-px">{money(line.amount)}</td>
                 </tr>
               ))}
             </tbody>
@@ -191,7 +167,7 @@ export function PublicReceipt({ item, school, lang }: { item: PublicReceiptSlip;
                 <td className="py-1 print:py-0.5" colSpan={2}>
                   {t.grandTotal}
                 </td>
-                <td className="py-1 text-right tabular-nums print:py-0.5">{money(total, lang)}</td>
+                <td className="py-1 text-right tabular-nums print:py-0.5">{money(total)}</td>
               </tr>
             </tfoot>
           </table>
@@ -200,7 +176,7 @@ export function PublicReceipt({ item, school, lang }: { item: PublicReceiptSlip;
             <div className="min-w-0 flex-1">
               <p className="text-sm leading-snug print:text-[11px]">
                 <span className="font-semibold">{t.inWords}: </span>
-                {amountInWords(total, lang)}
+                {amountInWords(total, "en")}
               </p>
             </div>
             <div className="self-end sm:self-start print:self-start">
