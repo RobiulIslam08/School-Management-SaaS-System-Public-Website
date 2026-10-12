@@ -5,6 +5,8 @@ import { getLang } from "@/lib/locale";
 import { pick } from "@/lib/text";
 import "./globals.css";
 
+export const dynamic = "force-dynamic";
+
 const noto = Noto_Sans_Bengali({
   subsets: ["bengali"],
   weight: ["400", "500", "600", "700"],

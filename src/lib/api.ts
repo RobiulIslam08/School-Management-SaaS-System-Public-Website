@@ -4,7 +4,10 @@ import type { ClassItem, NoticeItem, PageDetail, PostItem, PublicSite } from "./
 
 async function read<T>(path: string): Promise<T | null> {
   try {
-    const response = await fetch(`${apiOrigin()}/api/v1${path}`, { next: { revalidate: 60 } });
+    const response = await fetch(`${apiOrigin()}/api/v1${path}`, {
+      next: { revalidate: 60 },
+      signal: AbortSignal.timeout(8000),
+    });
     if (!response.ok) return null;
     const json = (await response.json()) as { data?: T };
     return json.data ?? null;

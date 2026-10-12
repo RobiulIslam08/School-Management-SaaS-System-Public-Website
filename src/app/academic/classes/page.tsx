@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { PageIntro, Shell } from "@/components/shell";
 import { getSite } from "@/lib/api";
 import { getLang } from "@/lib/locale";
@@ -83,8 +84,8 @@ function ClassCard({ item, lang }: { item: ClassItem; lang: Lang }) {
         )) : <li className="text-sm text-muted">{bn ? "বিষয় এখনো যোগ হয়নি।" : "Subjects are not listed yet."}</li>}
       </ul>
       <p className="mt-4 flex gap-4 text-sm font-semibold">
-        <a className="text-brand" href="/academic/routine">{bn ? "রুটিন" : "Routine"}</a>
-        <a className="text-brand" href="/academic/syllabus">{bn ? "সিলেবাস" : "Syllabus"}</a>
+        <Link className="text-brand" href="/academic/routine">{bn ? "রুটিন" : "Routine"}</Link>
+        <Link className="text-brand" href="/academic/syllabus">{bn ? "সিলেবাস" : "Syllabus"}</Link>
       </p>
     </article>
   );

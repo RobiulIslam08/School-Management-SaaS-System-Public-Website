@@ -32,7 +32,6 @@ export function RoutineBoard({ classes, lang }: { classes: ClassItem[]; lang: La
   useEffect(() => {
     if (!classId) return;
     let cancelled = false;
-    setMessage("");
     fetch(`/api/v1/public/website/routine?classId=${classId}&section=${encodeURIComponent(section)}`)
       .then(async (response) => {
         const json = (await response.json()) as { data?: Slot[]; message?: string };
@@ -43,7 +42,7 @@ export function RoutineBoard({ classes, lang }: { classes: ClassItem[]; lang: La
           return;
         }
         setSlots(json.data ?? []);
-        if (!json.data?.length) setMessage(bn ? "এই শাখায় এখনো রুটিন নেই।" : "No routine for this section yet.");
+        setMessage(json.data?.length ? "" : (bn ? "এই শাখায় এখনো রুটিন নেই।" : "No routine for this section yet."));
       })
       .catch(() => {
         if (!cancelled) setMessage(bn ? "রুটিন লোড হয়নি।" : "Routine could not be loaded.");

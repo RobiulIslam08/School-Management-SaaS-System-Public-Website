@@ -20,7 +20,6 @@ export function SyllabusBoard({ classes, lang }: { classes: ClassItem[]; lang: L
   useEffect(() => {
     if (!classId) return;
     let cancelled = false;
-    setMessage("");
     fetch(`/api/v1/public/website/syllabus?classId=${classId}`)
       .then(async (response) => {
         const json = (await response.json()) as { data?: Outline[]; message?: string };
@@ -31,7 +30,7 @@ export function SyllabusBoard({ classes, lang }: { classes: ClassItem[]; lang: L
           return;
         }
         setRows(json.data ?? []);
-        if (!json.data?.length) setMessage(bn ? "এই ক্লাসের অধ্যায় এখনো প্রকাশিত হয়নি।" : "No chapters are published for this class yet.");
+        setMessage(json.data?.length ? "" : (bn ? "এই ক্লাসের অধ্যায় এখনো প্রকাশিত হয়নি।" : "No chapters are published for this class yet."));
       })
       .catch(() => {
         if (!cancelled) setMessage(bn ? "সিলেবাস লোড হয়নি।" : "Syllabus could not be loaded.");
