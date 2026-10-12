@@ -1889,7 +1889,7 @@ body {
   .fee-receipt-sheet footer { display: block !important; }
   body { background: white; }
   .result-sheet, .notice-sheet { border: 0; box-shadow: none; }
-  @page { size: A4 portrait; margin: 10mm; }
+  @page { size: A4 portrait; margin: 6mm 8mm; }
   body:has(.public-results) * { visibility: hidden !important; }
   body:has(.public-results) .marksheet-sheet,
   body:has(.public-results) .marksheet-sheet * { visibility: visible !important; }
@@ -1957,19 +1957,37 @@ body {
     left: auto !important;
     top: auto !important;
     width: 100% !important;
-    max-width: none !important;
+    max-width: 210mm !important;
     height: auto !important;
     max-height: none !important;
-    margin: 0 !important;
+    margin: 0 auto !important;
     box-shadow: none !important;
     display: block !important;
     overflow: visible !important;
-    break-inside: auto;
-    page-break-inside: auto;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
   }
-  body:has(.admission-print-root) .admission-grid,
-  body:has(.admission-print-root) .admission-addresses { grid-template-columns: 1fr !important; }
-  body:has(.admission-print-root) .admission-cell.is-wide { grid-column: auto !important; }
+  body:has(.admission-print-root) .admission-frame,
+  body:has(.admission-print-root) .admission-inner {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+  body:has(.admission-print-root) .admission-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  body:has(.admission-print-root) .admission-addresses {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+  body:has(.admission-print-root) .admission-cell.is-wide {
+    grid-column: span 2 / span 2 !important;
+  }
+  body:has(.admission-print-root) .admission-cell {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
   body:has(.admission-print-root) .no-print,
   body:has(.admission-print-root) .no-print * {
     display: none !important;

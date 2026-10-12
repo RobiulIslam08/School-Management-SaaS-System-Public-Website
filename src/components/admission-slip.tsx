@@ -159,13 +159,13 @@ export function AdmissionSlip({ school, data }: { school: SlipSchool; data: Slip
               <FieldCell label={t.studentName} value={data.name || data.nameBn} wide />
               <FieldCell label={t.id} value={data.studentId} />
               <FieldCell label={t.phone} value={data.phone} />
-              <FieldCell label={t.email} value={data.email} />
+              <FieldCell label={t.course} value={data.courseName} />
+              <FieldCell label={t.section} value={data.section} />
               <FieldCell label={t.dob} value={data.dob} />
               <FieldCell label={t.birthReg} value={data.birthRegNo} />
               <FieldCell label={t.religion} value={data.religion} />
               <FieldCell label={t.blood} value={data.bloodGroup} />
-              <FieldCell label={t.course} value={data.courseName} wide />
-              <FieldCell label={t.section} value={data.section} wide />
+              <FieldCell label={t.email} value={data.email} wide />
             </div>
           </section>
 
