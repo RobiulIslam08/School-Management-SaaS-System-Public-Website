@@ -1724,18 +1724,31 @@ body {
 .admission-sheet {
   width: 100%;
   max-width: 210mm;
+  min-height: 278mm;
   margin: 0 auto;
   background: #fff;
   color: #1c1917;
   box-shadow: 0 1px 4px rgba(28, 25, 23, 0.08);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 .admission-frame {
   border: 3px solid #1c1917;
   padding: 4px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 .admission-inner {
   border: 1px solid rgba(28, 25, 23, 0.7);
-  padding: 0.75rem;
+  padding: 0.85rem 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
 }
 .admission-head {
   display: grid;
@@ -1889,7 +1902,7 @@ body {
   .fee-receipt-sheet footer { display: block !important; }
   body { background: white; }
   .result-sheet, .notice-sheet { border: 0; box-shadow: none; }
-  @page { size: A4 portrait; margin: 6mm 8mm; }
+  @page { size: A4 portrait; margin: 8mm 10mm; }
   body:has(.public-results) * { visibility: hidden !important; }
   body:has(.public-results) .marksheet-sheet,
   body:has(.public-results) .marksheet-sheet * { visibility: visible !important; }
@@ -1957,18 +1970,38 @@ body {
     left: auto !important;
     top: auto !important;
     width: 100% !important;
-    max-width: 210mm !important;
-    height: auto !important;
-    max-height: none !important;
+    max-width: 100% !important;
+    height: 281mm !important;
+    min-height: 281mm !important;
+    max-height: 281mm !important;
     margin: 0 auto !important;
     box-shadow: none !important;
-    display: block !important;
-    overflow: visible !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
     break-inside: avoid !important;
     page-break-inside: avoid !important;
   }
-  body:has(.admission-print-root) .admission-frame,
+  body:has(.admission-print-root) .admission-frame {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-sizing: border-box !important;
+    height: 100% !important;
+    border-width: 2.5px !important;
+    padding: 3px !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
   body:has(.admission-print-root) .admission-inner {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    box-sizing: border-box !important;
+    height: 100% !important;
+    padding: 10px 14px !important;
     break-inside: avoid !important;
     page-break-inside: avoid !important;
   }
