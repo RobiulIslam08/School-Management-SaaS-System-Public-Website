@@ -75,6 +75,7 @@ export default async function HomePage() {
   const heroTitle = pick(lang, config.heroTitleBn, config.heroTitleEn) || school.name;
   const heroSubtitle = pick(lang, config.heroSubtitleBn, config.heroSubtitleEn) || school.motto;
   const bn = lang === "bn";
+  const principalPerson = people.find((person) => person.board === "principal");
   const facts = [
     school.eiin ? { label: "EIIN", value: school.eiin } : null,
     school.address ? { label: bn ? "ঠিকানা" : "Address", value: school.address } : null,
@@ -307,7 +308,7 @@ export default async function HomePage() {
                 <blockquote>
                   <p className="section-kicker">{bn ? "প্রধান শিক্ষকের বাণী" : "From the principal"}</p>
                   <p className="display mt-3 text-xl leading-snug md:text-3xl">“{pick(lang, config.principalQuoteBn, config.principalQuoteEn)}”</p>
-                  <Link href="/office/principal" className="mt-4 inline-block text-sm underline underline-offset-4">{bn ? "পূর্ণ বাণী" : "Full message"}</Link>
+                  <Link href={principalPerson ? `/office/principal/${principalPerson._id}` : "/office/principal"} className="mt-4 inline-block text-sm underline underline-offset-4">{bn ? "পূর্ণ বাণী" : "Full message"}</Link>
                 </blockquote>
               </div>
             ) : null}
@@ -328,7 +329,7 @@ export default async function HomePage() {
                 <blockquote>
                   <p className="section-kicker">{bn ? "সহকারি অধ্যক্ষের বাণী" : "From the assistant principal"}</p>
                   <p className="mt-3 text-lg leading-snug">{excerpt(pick(lang, person.bioBn, person.bioEn), 180)}</p>
-                  <Link href="/office/vice" className="mt-4 inline-block text-sm underline underline-offset-4">{bn ? "পূর্ণ বাণী" : "Full message"}</Link>
+                  <Link href={`/office/vice/${person._id}`} className="mt-4 inline-block text-sm underline underline-offset-4">{bn ? "পূর্ণ বাণী" : "Full message"}</Link>
                 </blockquote>
               </div>
             ))}

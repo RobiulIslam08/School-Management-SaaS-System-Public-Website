@@ -95,6 +95,8 @@ export interface TeacherItem {
   designation?: string;
   photoUrl?: string;
   phone?: string;
+  bioBn?: string;
+  bioEn?: string;
 }
 
 export interface PersonItem {

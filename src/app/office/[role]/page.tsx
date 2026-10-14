@@ -98,7 +98,6 @@ export default async function Page({ params }: { params: Promise<{ role: string 
       duties={copy.duties}
       visit={copy.visit}
       people={filterPeople(site, [role])}
-      variant={role === "principal" || role === "vice" ? "leaders" : "staff"}
     />
   );
 }

@@ -1,9 +1,17 @@
+import Link from "next/link";
 import { PageIntro, Shell } from "@/components/shell";
 import { getSite } from "@/lib/api";
 import type { Lang, PersonItem, PublicSite } from "@/lib/types";
 import { getLang } from "@/lib/locale";
 import { resolvePhoto } from "@/lib/media";
 import { pick } from "@/lib/text";
+
+const OFFICE_BOARDS = new Set(["principal", "vice", "admission", "accounts", "librarian", "exam", "clerk"]);
+
+export function personHref(person: Pick<PersonItem, "_id" | "board">): string {
+  const base = OFFICE_BOARDS.has(person.board) ? `/office/${person.board}` : `/authorities/${person.board}`;
+  return `${base}/${person._id}`;
+}
 
 export async function PeopleDirectory({
   title,
@@ -13,7 +21,7 @@ export async function PeopleDirectory({
   visit,
   links,
   people,
-  variant = "staff",
+  leaders = [],
 }: {
   title: string;
   summary?: string;
@@ -22,11 +30,10 @@ export async function PeopleDirectory({
   visit?: string[];
   links?: Array<{ href: string; label: string }>;
   people: PersonItem[];
-  variant?: "staff" | "leaders" | "committee";
+  leaders?: PersonItem[];
 }) {
   const [site, lang] = await Promise.all([getSite(), getLang()]);
   if (!site) return <p className="p-8">The school site could not be loaded.</p>;
-  const leaders = variant === "leaders";
   const detail = (
     <>
       {duties?.length ? (
@@ -60,12 +67,11 @@ export async function PeopleDirectory({
         {site.config.officeHours ? <p><span>{lang === "bn" ? "অফিস সময়" : "Hours"}</span>{site.config.officeHours}</p> : null}
         {site.config.phone ? <p><span>{lang === "bn" ? "ফোন" : "Phone"}</span>{site.config.phone}</p> : null}
         {site.school.address ? <p><span>{lang === "bn" ? "ঠিকানা" : "Address"}</span>{site.school.address}</p> : null}
-        <p><span>{lang === "bn" ? "তালিকায়" : "Listed"}</span>{people.length}</p>
+        <p><span>{lang === "bn" ? "তালিকায়" : "Listed"}</span>{people.length + leaders.length}</p>
       </div>
-      {note || !leaders ? (
+      {note ? (
         <div className="article">
-          {note ? <p className="story-lead">{note}</p> : null}
-          {leaders ? null : detail}
+          <p className="story-lead">{note}</p>
         </div>
       ) : null}
       {links?.length ? (
@@ -78,10 +84,68 @@ export async function PeopleDirectory({
           ))}
         </div>
       ) : null}
-      <PeopleGrid people={people} lang={lang} variant={variant} />
-      {leaders ? <div className="article">{detail}</div> : null}
+      {leaders.map((person) => (
+        <ProfileFrame
+          key={person._id}
+          name={person.name}
+          designation={person.designation}
+          photoUrl={person.photoUrl}
+          message={pick(lang, person.bioBn, person.bioEn)}
+          phone={person.board === "committee" ? undefined : person.phone}
+          href={personHref(person)}
+        />
+      ))}
+      {people.length ? <PeopleGrid people={people} /> : leaders.length ? null : (
+        <p className="mx-auto max-w-7xl px-4 py-12 text-sm text-muted">{lang === "bn" ? "এই তালিকায় এখনো কেউ যোগ হয়নি।" : "No one is published on this list yet."}</p>
+      )}
+      {duties?.length || visit?.length ? <div className="article">{detail}</div> : null}
     </Shell>
   );
+}
+
+export function ProfileFrame({
+  name,
+  designation,
+  photoUrl,
+  message,
+  phone,
+  href,
+}: {
+  name: string;
+  designation?: string;
+  photoUrl?: string;
+  message?: string;
+  phone?: string;
+  href?: string;
+}) {
+  const frame = (
+    <>
+      <div className="leader-sheet">
+        <div className="portrait">
+          {photoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={resolvePhoto(photoUrl)} alt={name} />
+          ) : (
+            <div className="grid aspect-[3/4] place-items-center text-4xl text-brand">{name.slice(0, 1)}</div>
+          )}
+        </div>
+        <div>
+          <h2 className="text-2xl font-semibold">{name}</h2>
+          {designation ? <p className="mt-1 text-sm text-muted">{designation}</p> : null}
+          {phone ? <p className="mt-2 text-sm font-medium text-brand">{phone}</p> : null}
+          {message ? <p className="leader-message">{message}</p> : null}
+        </div>
+      </div>
+    </>
+  );
+  if (href) {
+    return (
+      <Link href={href} className="leader-list block text-inherit no-underline">
+        {frame}
+      </Link>
+    );
+  }
+  return <article className="leader-list">{frame}</article>;
 }
 
 function Portrait({ person }: { person: PersonItem }) {
@@ -97,41 +161,21 @@ function Portrait({ person }: { person: PersonItem }) {
   );
 }
 
-function PeopleGrid({ people, lang, variant }: { people: PersonItem[]; lang: Lang; variant: "staff" | "leaders" | "committee" }) {
-  if (!people.length) {
-    return <p className="mx-auto max-w-7xl px-4 py-12 text-sm text-muted">{lang === "bn" ? "এই তালিকায় এখনো কেউ যোগ হয়নি।" : "No one is published on this list yet."}</p>;
-  }
-  if (variant === "leaders") {
-    const many = people.length > 1;
-    return (
-      <ul className={many ? "leader-row" : "leader-list"}>
-        {people.map((person) => (
-          <li key={person._id} className="leader-sheet">
-            <Portrait person={person} />
-            <div>
-              <h2 className="text-2xl font-semibold">{person.name}</h2>
-              {person.designation ? <p className="mt-1 text-sm text-muted">{person.designation}</p> : null}
-              {pick(lang, person.bioBn, person.bioEn) ? <p className="leader-message">{pick(lang, person.bioBn, person.bioEn)}</p> : null}
-            </div>
-          </li>
-        ))}
-      </ul>
-    );
-  }
+function PeopleGrid({ people }: { people: PersonItem[] }) {
   const single = people.length === 1;
-  const showPhone = variant !== "committee";
   return (
-    <ul className={single ? "card-center mx-auto max-w-7xl px-4 py-12" : variant === "committee" ? "committee-grid" : "mx-auto grid max-w-7xl gap-6 px-4 py-12 sm:grid-cols-2 lg:grid-cols-3"}>
+    <ul className={single ? "card-center mx-auto max-w-7xl px-4 py-6" : "mx-auto grid max-w-7xl gap-6 px-4 py-6 sm:grid-cols-2 lg:grid-cols-4"}>
       {people.map((person) => (
-        <li key={person._id} className="staff-card">
-          <Portrait person={person} />
-          <div className="staff-rule" />
-          <div className="space-y-1 px-4 py-4">
-            <p className="text-lg font-semibold">{person.name}</p>
-            <p className="text-sm text-muted">{person.designation}</p>
-            {showPhone && person.board !== "committee" && person.phone ? <p className="text-sm font-medium text-brand">{person.phone}</p> : null}
-            <p className="pt-1 text-sm leading-6">{pick(lang, person.bioBn, person.bioEn)}</p>
-          </div>
+        <li key={person._id}>
+          <Link href={personHref(person)} className="staff-card block">
+            <Portrait person={person} />
+            <div className="staff-rule" />
+            <div className="space-y-1 px-4 py-4">
+              <h3 className="font-semibold">{person.name}</h3>
+              <p className="text-sm text-muted">{person.designation}</p>
+              {person.board !== "committee" && person.phone ? <p className="text-sm font-medium text-brand">{person.phone}</p> : null}
+            </div>
+          </Link>
         </li>
       ))}
     </ul>
@@ -140,6 +184,30 @@ function PeopleGrid({ people, lang, variant }: { people: PersonItem[]; lang: Lan
 
 export function filterPeople(site: PublicSite, boards: string[]): PersonItem[] {
   return site.people.filter((person) => boards.includes(person.board));
+}
+
+function compactRole(designation?: string): string {
+  return (designation ?? "").replace(/[\s-]/g, "").toLowerCase();
+}
+
+export function committeeSeat(designation?: string): "president" | "vice" | null {
+  const role = compactRole(designation);
+  if (role.includes("সহসভাপতি") || role.includes("vicepresident") || role.includes("vicechair")) return "vice";
+  if (role.includes("সভাপতি") || role === "president" || role === "chairperson" || role === "chairman") return "president";
+  return null;
+}
+
+export function splitCommittee(people: PersonItem[]): { leaders: PersonItem[]; rest: PersonItem[] } {
+  const presidents: PersonItem[] = [];
+  const vices: PersonItem[] = [];
+  const rest: PersonItem[] = [];
+  for (const person of people) {
+    const seat = committeeSeat(person.designation);
+    if (seat === "president") presidents.push(person);
+    else if (seat === "vice") vices.push(person);
+    else rest.push(person);
+  }
+  return { leaders: [...presidents, ...vices], rest };
 }
 
 function lines(primary: string[] | undefined, secondary: string[] | undefined, fallback: string[]): string[] {

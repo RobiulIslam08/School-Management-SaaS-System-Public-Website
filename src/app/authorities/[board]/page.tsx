@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { PeopleDirectory, deskCopy, filterPeople } from "@/components/people-board";
+import { PeopleDirectory, deskCopy, filterPeople, splitCommittee } from "@/components/people-board";
 import { getSite } from "@/lib/api";
 import { getLang } from "@/lib/locale";
 import { pick } from "@/lib/text";
@@ -70,6 +70,8 @@ export default async function Page({ params }: { params: Promise<{ board: string
     duties: lang === "bn" ? label.dutiesBn : label.dutiesEn,
     visit: lang === "bn" ? label.visitBn : label.visitEn,
   });
+  const listed = filterPeople(site, [board]);
+  const committee = board === "committee" ? splitCommittee(listed) : { leaders: [], rest: listed };
   return (
     <PeopleDirectory
       title={pick(lang, child?.labelBn, child?.labelEn) || (lang === "bn" ? label.bn : label.en)}
@@ -77,8 +79,8 @@ export default async function Page({ params }: { params: Promise<{ board: string
       note={copy.note}
       duties={copy.duties}
       visit={copy.visit}
-      people={filterPeople(site, [board])}
-      variant={board === "committee" ? "committee" : "staff"}
+      leaders={committee.leaders}
+      people={committee.rest}
     />
   );
 }
