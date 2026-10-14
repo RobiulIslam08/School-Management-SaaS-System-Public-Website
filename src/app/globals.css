@@ -218,6 +218,48 @@ body {
   height: 3px;
   background: var(--brand);
 }
+.leader-list,
+.leader-row {
+  display: grid;
+  gap: 2rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+.leader-sheet {
+  display: grid;
+  gap: 1.5rem;
+  align-items: start;
+}
+.leader-sheet .portrait {
+  border-radius: 1.25rem;
+}
+.leader-sheet .portrait img,
+.leader-sheet .portrait .photo-fallback,
+.leader-sheet .portrait > div {
+  border-radius: 1.25rem;
+}
+.leader-message {
+  margin-top: 1rem;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  white-space: pre-wrap;
+}
+@media (min-width: 768px) {
+  .leader-list .leader-sheet { grid-template-columns: 16rem 1fr; }
+  .leader-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .leader-row .leader-sheet { grid-template-columns: 9rem 1fr; }
+}
+.committee-grid {
+  display: grid;
+  gap: 1.5rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+@media (min-width: 640px) {
+  .committee-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 .card-center {
   display: flex;
   justify-content: center;

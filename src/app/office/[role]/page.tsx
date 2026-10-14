@@ -16,10 +16,10 @@ const ROLES: Record<string, { bn: string; en: string; noteBn: string; noteEn: st
     visitEn: ["During office hours", "A call ahead makes a meeting easier", "Urgent news is a notice"],
   },
   vice: {
-    bn: "সহকারী প্রধান শিক্ষক",
-    en: "Vice principal",
-    noteBn: "সহকারী প্রধান শিক্ষক রুটিন, উপস্থিতি ও শ্রেণি শিক্ষকদের সমন্বয় দেখেন। দেরির খাতা এই ডেস্কে।",
-    noteEn: "The vice principal watches the routine, attendance, and class teachers. The late-arrival note stays at this desk.",
+    bn: "সহকারি অধ্যক্ষ",
+    en: "Assistant principal",
+    noteBn: "সহকারি অধ্যক্ষ রুটিন, উপস্থিতি ও শ্রেণি শিক্ষকদের সমন্বয় দেখেন। দেরির খাতা এই ডেস্কে।",
+    noteEn: "The assistant principal watches the routine, attendance, and class teachers. The late-arrival note stays at this desk.",
     dutiesBn: ["রুটিন ও উপস্থিতি", "শ্রেণি শিক্ষকদের সমন্বয়", "দেরির খাতা"],
     dutiesEn: ["Routine and attendance", "Coordinates class teachers", "The late-arrival note"],
     visitBn: ["সকালে, ক্লাস শুরুর আগে", "দেরির কারণ এখানে", "রুটিন বদল নোটিশে"],
@@ -98,6 +98,7 @@ export default async function Page({ params }: { params: Promise<{ role: string 
       duties={copy.duties}
       visit={copy.visit}
       people={filterPeople(site, [role])}
+      variant={role === "principal" || role === "vice" ? "leaders" : "staff"}
     />
   );
 }

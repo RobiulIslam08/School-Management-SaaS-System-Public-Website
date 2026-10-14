@@ -4,7 +4,7 @@ import { getLang } from "@/lib/locale";
 
 const LINKS = [
   { href: "/office/principal", bn: "অধ্যক্ষ", en: "Principal" },
-  { href: "/office/vice", bn: "সহকারী প্রধান শিক্ষক", en: "Vice principal" },
+  { href: "/office/vice", bn: "সহকারি অধ্যক্ষ", en: "Assistant principal" },
   { href: "/office/admission", bn: "ভর্তি শাখা", en: "Admission" },
   { href: "/office/accounts", bn: "হিসাব শাখা", en: "Accounts" },
   { href: "/office/librarian", bn: "গ্রন্থাগারিক", en: "Librarian" },

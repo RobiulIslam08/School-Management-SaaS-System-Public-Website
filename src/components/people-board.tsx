@@ -13,6 +13,7 @@ export async function PeopleDirectory({
   visit,
   links,
   people,
+  variant = "staff",
 }: {
   title: string;
   summary?: string;
@@ -21,9 +22,37 @@ export async function PeopleDirectory({
   visit?: string[];
   links?: Array<{ href: string; label: string }>;
   people: PersonItem[];
+  variant?: "staff" | "leaders" | "committee";
 }) {
   const [site, lang] = await Promise.all([getSite(), getLang()]);
   if (!site) return <p className="p-8">The school site could not be loaded.</p>;
+  const leaders = variant === "leaders";
+  const detail = (
+    <>
+      {duties?.length ? (
+        <section className="story-card">
+          <span className="story-num">{lang === "bn" ? "০১" : "01"}</span>
+          <div>
+            <h2>{lang === "bn" ? "দায়িত্ব" : "Duties"}</h2>
+            <ul className="story-ticks">
+              {duties.map((item, index) => <li key={`duty-${index}`}>{item}</li>)}
+            </ul>
+          </div>
+        </section>
+      ) : null}
+      {visit?.length ? (
+        <section className="story-card">
+          <span className="story-num">{lang === "bn" ? "০২" : "02"}</span>
+          <div>
+            <h2>{lang === "bn" ? "কখন আসবেন" : "When to visit"}</h2>
+            <ul className="story-ticks">
+              {visit.map((item, index) => <li key={`visit-${index}`}>{item}</li>)}
+            </ul>
+          </div>
+        </section>
+      ) : null}
+    </>
+  );
   return (
     <Shell site={site} lang={lang}>
       <PageIntro kicker={site.school.name} title={title} summary={summary} image={site.config.heroImageUrl} alt={site.school.name} />
@@ -33,31 +62,12 @@ export async function PeopleDirectory({
         {site.school.address ? <p><span>{lang === "bn" ? "ঠিকানা" : "Address"}</span>{site.school.address}</p> : null}
         <p><span>{lang === "bn" ? "তালিকায়" : "Listed"}</span>{people.length}</p>
       </div>
-      <div className="article">
-        {note ? <p className="story-lead">{note}</p> : null}
-        {duties?.length ? (
-          <section className="story-card">
-            <span className="story-num">{lang === "bn" ? "০১" : "01"}</span>
-            <div>
-              <h2>{lang === "bn" ? "দায়িত্ব" : "Duties"}</h2>
-              <ul className="story-ticks">
-                {duties.map((item, index) => <li key={`duty-${index}`}>{item}</li>)}
-              </ul>
-            </div>
-          </section>
-        ) : null}
-        {visit?.length ? (
-          <section className="story-card">
-            <span className="story-num">{lang === "bn" ? "০২" : "02"}</span>
-            <div>
-              <h2>{lang === "bn" ? "কখন আসবেন" : "When to visit"}</h2>
-              <ul className="story-ticks">
-                {visit.map((item, index) => <li key={`visit-${index}`}>{item}</li>)}
-              </ul>
-            </div>
-          </section>
-        ) : null}
-      </div>
+      {note || !leaders ? (
+        <div className="article">
+          {note ? <p className="story-lead">{note}</p> : null}
+          {leaders ? null : detail}
+        </div>
+      ) : null}
       {links?.length ? (
         <div className="hub-grid">
           {links.map((item, index) => (
@@ -68,33 +78,58 @@ export async function PeopleDirectory({
           ))}
         </div>
       ) : null}
-      <PeopleGrid people={people} lang={lang} />
+      <PeopleGrid people={people} lang={lang} variant={variant} />
+      {leaders ? <div className="article">{detail}</div> : null}
     </Shell>
   );
 }
 
-function PeopleGrid({ people, lang }: { people: PersonItem[]; lang: Lang }) {
+function Portrait({ person }: { person: PersonItem }) {
+  return (
+    <div className="portrait">
+      {person.photoUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={resolvePhoto(person.photoUrl)} alt={person.name} />
+      ) : (
+        <div className="grid aspect-[3/4] place-items-center text-4xl text-brand">{person.name.slice(0, 1)}</div>
+      )}
+    </div>
+  );
+}
+
+function PeopleGrid({ people, lang, variant }: { people: PersonItem[]; lang: Lang; variant: "staff" | "leaders" | "committee" }) {
   if (!people.length) {
     return <p className="mx-auto max-w-7xl px-4 py-12 text-sm text-muted">{lang === "bn" ? "এই তালিকায় এখনো কেউ যোগ হয়নি।" : "No one is published on this list yet."}</p>;
   }
+  if (variant === "leaders") {
+    const many = people.length > 1;
+    return (
+      <ul className={many ? "leader-row" : "leader-list"}>
+        {people.map((person) => (
+          <li key={person._id} className="leader-sheet">
+            <Portrait person={person} />
+            <div>
+              <h2 className="text-2xl font-semibold">{person.name}</h2>
+              {person.designation ? <p className="mt-1 text-sm text-muted">{person.designation}</p> : null}
+              {pick(lang, person.bioBn, person.bioEn) ? <p className="leader-message">{pick(lang, person.bioBn, person.bioEn)}</p> : null}
+            </div>
+          </li>
+        ))}
+      </ul>
+    );
+  }
   const single = people.length === 1;
+  const showPhone = variant !== "committee";
   return (
-    <ul className={single ? "card-center mx-auto max-w-7xl px-4 py-12" : "mx-auto grid max-w-7xl gap-6 px-4 py-12 sm:grid-cols-2 lg:grid-cols-3"}>
+    <ul className={single ? "card-center mx-auto max-w-7xl px-4 py-12" : variant === "committee" ? "committee-grid" : "mx-auto grid max-w-7xl gap-6 px-4 py-12 sm:grid-cols-2 lg:grid-cols-3"}>
       {people.map((person) => (
         <li key={person._id} className="staff-card">
-          <div className="portrait">
-            {person.photoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={resolvePhoto(person.photoUrl)} alt={person.name} />
-            ) : (
-              <div className="grid aspect-[3/4] place-items-center text-4xl text-brand">{person.name.slice(0, 1)}</div>
-            )}
-          </div>
+          <Portrait person={person} />
           <div className="staff-rule" />
           <div className="space-y-1 px-4 py-4">
             <p className="text-lg font-semibold">{person.name}</p>
             <p className="text-sm text-muted">{person.designation}</p>
-            {person.phone ? <p className="text-sm font-medium text-brand">{person.phone}</p> : null}
+            {showPhone && person.board !== "committee" && person.phone ? <p className="text-sm font-medium text-brand">{person.phone}</p> : null}
             <p className="pt-1 text-sm leading-6">{pick(lang, person.bioBn, person.bioEn)}</p>
           </div>
         </li>

@@ -287,25 +287,51 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {(config.principalQuoteBn || config.principalQuoteEn) ? (
+      {(config.principalQuoteBn || config.principalQuoteEn || people.some((person) => person.board === "vice")) ? (
         <section className="band-brand">
-          <div className="home-wrap home-block principal-layout">
-            <figure className="principal-frame">
-              <SitePhoto
-                src={config.principalPhotoUrl}
-                alt={config.principalName || (bn ? "প্রধান শিক্ষক" : "Principal")}
-                label={config.principalName || (bn ? "প্রধান শিক্ষক" : "Principal")}
-                className="principal-photo"
-              />
-              <figcaption className="principal-plate">
-                <strong>{config.principalName || (bn ? "প্রধান শিক্ষক" : "Principal")}</strong>
-                {config.principalDesignation ? <span>{config.principalDesignation}</span> : null}
-              </figcaption>
-            </figure>
-            <blockquote>
-              <p className="section-kicker">{bn ? "প্রধান শিক্ষকের বাণী" : "From the principal"}</p>
-              <p className="display mt-3 text-xl leading-snug md:text-3xl">“{pick(lang, config.principalQuoteBn, config.principalQuoteEn)}”</p>
-            </blockquote>
+          <div className="home-wrap home-block grid gap-10">
+            {(config.principalQuoteBn || config.principalQuoteEn) ? (
+              <div className="principal-layout">
+                <figure className="principal-frame">
+                  <SitePhoto
+                    src={config.principalPhotoUrl}
+                    alt={config.principalName || (bn ? "প্রধান শিক্ষক" : "Principal")}
+                    label={config.principalName || (bn ? "প্রধান শিক্ষক" : "Principal")}
+                    className="principal-photo"
+                  />
+                  <figcaption className="principal-plate">
+                    <strong>{config.principalName || (bn ? "প্রধান শিক্ষক" : "Principal")}</strong>
+                    {config.principalDesignation ? <span>{config.principalDesignation}</span> : null}
+                  </figcaption>
+                </figure>
+                <blockquote>
+                  <p className="section-kicker">{bn ? "প্রধান শিক্ষকের বাণী" : "From the principal"}</p>
+                  <p className="display mt-3 text-xl leading-snug md:text-3xl">“{pick(lang, config.principalQuoteBn, config.principalQuoteEn)}”</p>
+                  <Link href="/office/principal" className="mt-4 inline-block text-sm underline underline-offset-4">{bn ? "পূর্ণ বাণী" : "Full message"}</Link>
+                </blockquote>
+              </div>
+            ) : null}
+            {people.filter((person) => person.board === "vice").slice(0, 1).map((person) => (
+              <div key={person._id} className="principal-layout">
+                <figure className="principal-frame">
+                  <SitePhoto
+                    src={person.photoUrl}
+                    alt={person.name}
+                    label={person.name}
+                    className="principal-photo"
+                  />
+                  <figcaption className="principal-plate">
+                    <strong>{person.name}</strong>
+                    {person.designation ? <span>{person.designation}</span> : null}
+                  </figcaption>
+                </figure>
+                <blockquote>
+                  <p className="section-kicker">{bn ? "সহকারি অধ্যক্ষের বাণী" : "From the assistant principal"}</p>
+                  <p className="mt-3 text-lg leading-snug">{excerpt(pick(lang, person.bioBn, person.bioEn), 180)}</p>
+                  <Link href="/office/vice" className="mt-4 inline-block text-sm underline underline-offset-4">{bn ? "পূর্ণ বাণী" : "Full message"}</Link>
+                </blockquote>
+              </div>
+            ))}
           </div>
         </section>
       ) : null}

@@ -77,6 +77,7 @@ const MENUS: MenuItem[] = [
     labelEn: "Authorities",
     visible: true,
     children: [
+      { key: "committee", href: "/authorities/committee", labelBn: "স্কুল কমিটি", labelEn: "School committee", visible: true },
       { key: "governing", href: "/authorities/governing", labelBn: "পরিচালনা পর্ষদ", labelEn: "Governing body", visible: true },
       { key: "council", href: "/authorities/council", labelBn: "একাডেমিক কাউন্সিল", labelEn: "Academic council", visible: true },
       { key: "syndicate", href: "/authorities/syndicate", labelBn: "সিন্ডিকেট", labelEn: "Syndicate", visible: true },
@@ -91,7 +92,7 @@ const MENUS: MenuItem[] = [
     visible: true,
     children: [
       { key: "principal", href: "/office/principal", labelBn: "অধ্যক্ষ", labelEn: "Principal", visible: true },
-      { key: "vice", href: "/office/vice", labelBn: "সহকারী প্রধান শিক্ষক", labelEn: "Vice principal", visible: true },
+      { key: "vice", href: "/office/vice", labelBn: "সহকারি অধ্যক্ষ", labelEn: "Assistant principal", visible: true },
       { key: "admission", href: "/office/admission", labelBn: "ভর্তি শাখা", labelEn: "Admission office", visible: true },
       { key: "accounts", href: "/office/accounts", labelBn: "হিসাব শাখা", labelEn: "Accounts", visible: true },
       { key: "librarian", href: "/office/librarian", labelBn: "গ্রন্থাগারিক", labelEn: "Librarian", visible: true },

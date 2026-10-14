@@ -6,7 +6,7 @@ import type { TeacherItem } from "@/lib/types";
 
 function groupOf(designation: string): "head" | "vice" | "teacher" {
   const text = designation.toLowerCase();
-  const assistant = text.includes("assistant") || text.includes("vice") || designation.includes("সহকারী");
+  const assistant = text.includes("assistant") || text.includes("vice") || designation.includes("সহকারী") || designation.includes("সহকারি");
   const head = text.includes("headmaster") || text.includes("principal") || designation.includes("প্রধান");
   if (assistant && head) return "vice";
   if (head) return "head";
@@ -15,7 +15,7 @@ function groupOf(designation: string): "head" | "vice" | "teacher" {
 
 const GROUPS: Array<{ key: "head" | "vice" | "teacher"; bn: string; en: string }> = [
   { key: "head", bn: "প্রধান শিক্ষক", en: "Principal" },
-  { key: "vice", bn: "সহকারী প্রধান শিক্ষক", en: "Vice principal" },
+  { key: "vice", bn: "সহকারি অধ্যক্ষ", en: "Assistant principal" },
   { key: "teacher", bn: "শিক্ষক", en: "Teachers" },
 ];
 

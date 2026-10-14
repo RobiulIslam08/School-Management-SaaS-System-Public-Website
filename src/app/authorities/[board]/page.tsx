@@ -5,6 +5,16 @@ import { getLang } from "@/lib/locale";
 import { pick } from "@/lib/text";
 
 const BOARDS: Record<string, { bn: string; en: string; noteBn: string; noteEn: string; dutiesBn: string[]; dutiesEn: string[]; visitBn: string[]; visitEn: string[] }> = {
+  committee: {
+    bn: "স্কুল কমিটি",
+    en: "School committee",
+    noteBn: "স্কুল কমিটি স্কুলের বড় সিদ্ধান্ত ও অভিভাবকদের সঙ্গে আলোচনা দেখে। সভার তারিখ নোটিশে। সদস্যদের ফোন এই পাতায় নেই।",
+    noteEn: "The school committee watches major decisions and talks with families. The meeting date is a notice. Member phones are not on this page.",
+    dutiesBn: ["বড় সিদ্ধান্ত সভায়", "অভিভাবকদের সঙ্গে আলোচনা", "সভার তারিখ নোটিশে"],
+    dutiesEn: ["Major decisions in a meeting", "Talks with families", "The meeting date is a notice"],
+    visitBn: ["সভার তারিখ নোটিশে", "অফিস সময়ে যোগাযোগ", "সিদ্ধান্ত নোটিশে"],
+    visitEn: ["The meeting date is a notice", "Contact during office hours", "The decision is a notice"],
+  },
   governing: {
     bn: "পরিচালনা পর্ষদ",
     en: "Governing body",
@@ -68,6 +78,7 @@ export default async function Page({ params }: { params: Promise<{ board: string
       duties={copy.duties}
       visit={copy.visit}
       people={filterPeople(site, [board])}
+      variant={board === "committee" ? "committee" : "staff"}
     />
   );
 }
