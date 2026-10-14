@@ -41,7 +41,7 @@ export function Shell({ site, lang, children }: { site: PublicSite; lang: Lang; 
               <span className="brand-seal">
                 {school.logoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={school.logoUrl} alt="" />
+                  <img src={school.logoUrl} alt="" loading="eager" decoding="async" />
                 ) : (
                   <span>{school.name.slice(0, 1)}</span>
                 )}
@@ -136,7 +136,7 @@ export function PageIntro({
       <header>
         <div className="page-banner">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={resolvePhoto(image)} alt={alt || ""} />
+          <img src={resolvePhoto(image)} alt={alt || ""} decoding="async" />
         </div>
         <div className="page-banner-card">
           <Crest label={kicker} />

@@ -33,7 +33,7 @@ export default async function Page() {
           <Link key={album._id} className="feature-card block" href={`/gallery/${album._id}`}>
             {album.coverUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={resolvePhoto(album.coverUrl)} alt={pick(lang, album.titleBn, album.titleEn)} className="aspect-[4/3]" />
+              <img src={resolvePhoto(album.coverUrl)} alt={pick(lang, album.titleBn, album.titleEn)} className="aspect-[4/3]" loading="lazy" decoding="async" />
             ) : null}
             <div className="p-4">
               <p className="text-xs uppercase tracking-[0.16em] text-accent">{(lang === "bn" ? KIND[album.kind ?? ""]?.bn : KIND[album.kind ?? ""]?.en) || album.kind}</p>

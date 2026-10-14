@@ -17,7 +17,7 @@ export default async function Page() {
           <Link href={`/news/${lead._id}`} className="feature-card">
             {lead.coverUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={resolvePhoto(lead.coverUrl)} alt={lead.coverAlt || ""} className="aspect-[16/10]" />
+              <img src={resolvePhoto(lead.coverUrl)} alt={lead.coverAlt || ""} className="aspect-[16/10]" loading="lazy" decoding="async" />
             ) : null}
             <div className="p-6">
               <p className="text-xs uppercase tracking-[0.16em] text-accent">{lead.kind}</p>

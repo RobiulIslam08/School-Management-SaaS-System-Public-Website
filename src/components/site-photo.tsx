@@ -9,12 +9,14 @@ export function SitePhoto({
   label,
   className,
   quiet,
+  priority = false,
 }: {
   src?: string;
   alt: string;
   label?: string;
   className?: string;
   quiet?: boolean;
+  priority?: boolean;
 }) {
   const [failed, setFailed] = useState(false);
   const resolved = resolvePhoto(src);
@@ -29,6 +31,15 @@ export function SitePhoto({
   }
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={resolved} alt={alt} className={className} onError={() => setFailed(true)} />
+    <img
+      src={resolved}
+      alt={alt}
+      className={className}
+      loading={priority ? "eager" : "lazy"}
+      decoding="async"
+      // @ts-expect-error fetchpriority is standard in modern HTML
+      fetchpriority={priority ? "high" : "low"}
+      onError={() => setFailed(true)}
+    />
   );
 }

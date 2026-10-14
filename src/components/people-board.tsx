@@ -124,7 +124,7 @@ export function ProfileFrame({
         <div className="portrait">
           {photoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={resolvePhoto(photoUrl)} alt={name} />
+            <img src={resolvePhoto(photoUrl)} alt={name} loading="lazy" decoding="async" />
           ) : (
             <div className="grid aspect-[3/4] place-items-center text-4xl text-brand">{name.slice(0, 1)}</div>
           )}
@@ -153,7 +153,7 @@ function Portrait({ person }: { person: PersonItem }) {
     <div className="portrait">
       {person.photoUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={resolvePhoto(person.photoUrl)} alt={person.name} />
+        <img src={resolvePhoto(person.photoUrl)} alt={person.name} loading="lazy" decoding="async" />
       ) : (
         <div className="grid aspect-[3/4] place-items-center text-4xl text-brand">{person.name.slice(0, 1)}</div>
       )}

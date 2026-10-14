@@ -54,7 +54,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           return (
             <figure key={item._id}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={resolvePhoto(item.url)} alt={item.alt || ""} className="w-full rounded-[1.25rem] object-cover" />
+              <img src={resolvePhoto(item.url)} alt={item.alt || ""} className="w-full rounded-[1.25rem] object-cover" loading="lazy" decoding="async" />
               <figcaption className="mt-2 text-sm text-muted">{pick(lang, item.captionBn, item.captionEn)}</figcaption>
             </figure>
           );

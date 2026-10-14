@@ -60,7 +60,7 @@ function TeacherRow({ people }: { people: TeacherItem[] }) {
           <div className="portrait">
             {teacher.photoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={resolvePhoto(teacher.photoUrl)} alt={teacher.name} />
+              <img src={resolvePhoto(teacher.photoUrl)} alt={teacher.name} loading="lazy" decoding="async" />
             ) : (
               <div className="grid aspect-[3/4] place-items-center text-3xl text-brand">{teacher.name.slice(0, 1)}</div>
             )}

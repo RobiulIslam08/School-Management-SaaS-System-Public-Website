@@ -14,7 +14,7 @@ export function HeroStage({
 }) {
   return (
     <section className="hero-stage">
-      <SitePhoto src={image} alt={alt} quiet />
+      <SitePhoto src={image} alt={alt} quiet priority />
       {seal ? <p className="hero-seal">{seal}</p> : null}
       <div className="hero-shade">
         <div className="hero-plate">{children}</div>
