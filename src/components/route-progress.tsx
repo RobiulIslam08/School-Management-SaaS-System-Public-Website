@@ -12,12 +12,17 @@ export function RouteProgress() {
 
   useEffect(() => {
     // When path or search parameters change, complete progress and fade out
-    setProgress(100);
+    const frame = requestAnimationFrame(() => {
+      setProgress(100);
+    });
     const timer = setTimeout(() => {
       setActive(false);
       setProgress(0);
     }, 250);
-    return () => clearTimeout(timer);
+    return () => {
+      cancelAnimationFrame(frame);
+      clearTimeout(timer);
+    };
   }, [pathname, searchParams]);
 
   useEffect(() => {

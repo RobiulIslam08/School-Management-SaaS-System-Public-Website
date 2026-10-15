@@ -20,7 +20,7 @@ export default async function Page() {
         summary={bn
           ? `${site.teachers.length} জন শিক্ষক। অধ্যক্ষ ও সহকারি অধ্যক্ষ অফিস পাতার সেই একই মানুষ। কার্ডে বেতন বা বাড়ির ঠিকানা নেই।`
           : `${site.teachers.length} teachers. The principal and assistant principal are the same people as on the office pages. Cards do not show pay or a home address.`}
-        image={site.config.heroImageUrl}
+        image={site.config.heroImageUrl || "/media/campus.webp"}
         alt={site.school.name}
       />
       <div className="fact-row">
@@ -34,7 +34,7 @@ export default async function Page() {
           key={person._id}
           name={person.name}
           designation={person.designation}
-          photoUrl={person.photoUrl}
+          photoUrl={person.photoUrl || (person.board === "principal" ? "/media/portrait-0.webp" : "/media/portrait-1.webp")}
           message={pick(lang, person.bioBn, person.bioEn)}
           href={`/office/${person.board}/${person._id}`}
         />

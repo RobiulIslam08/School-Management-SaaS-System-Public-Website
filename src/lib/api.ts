@@ -1,39 +1,44 @@
 import { cache } from "react";
 import { apiOrigin } from "./origin";
-import { legacyPage, siteFromLegacy, type LegacyBranding } from "./site-fallback";
-import type { ClassItem, NoticeItem, PageDetail, PostItem, PublicSite } from "./types";
+import { legacyPage, siteFromLegacy } from "./site-fallback";
+import type { NoticeItem, PageDetail, PostItem, PublicSite } from "./types";
 
 async function read<T>(path: string): Promise<T | null> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 2000);
   try {
     const response = await fetch(`${apiOrigin()}/api/v1${path}`, {
       next: { revalidate: 60 },
-      signal: AbortSignal.timeout(3000),
+      signal: controller.signal,
     });
+    clearTimeout(timer);
     if (!response.ok) return null;
     const json = (await response.json()) as { data?: T };
     return json.data ?? null;
   } catch {
+    clearTimeout(timer);
     return null;
   }
 }
 
-export const getSite = cache(async (): Promise<PublicSite | null> => {
+export const getSite = cache(async (): Promise<PublicSite> => {
   const site = await read<PublicSite>("/public/website");
-  if (site?.school?.name) return site;
-  const [branding, notices, classes] = await Promise.all([
-    read<LegacyBranding>("/public/branding"),
-    read<NoticeItem[]>("/public/notices"),
-    read<ClassItem[]>("/public/classes"),
-  ]);
-  if (!branding) return null;
-  return siteFromLegacy(branding, notices ?? [], classes ?? []);
+  if (site?.school?.name) {
+    if (!site.config.heroImageUrl) {
+      site.config.heroImageUrl = site.albums?.[0]?.coverUrl || "/media/campus.webp";
+    }
+    if (!site.config.principalPhotoUrl) {
+      const principal = site.people?.find((p) => p.board === "principal");
+      site.config.principalPhotoUrl = principal?.photoUrl || "/media/portrait-0.webp";
+    }
+    return site;
+  }
+  return siteFromLegacy({}, [], []);
 });
 
 export const getPage = cache(async (slug: string): Promise<PageDetail | null> => {
   const page = await read<PageDetail>(`/public/website/pages/${encodeURIComponent(slug)}`);
   if (page) return page;
-  const site = await read<PublicSite>("/public/website");
-  if (site?.school?.name) return null;
   return legacyPage(slug);
 });
 

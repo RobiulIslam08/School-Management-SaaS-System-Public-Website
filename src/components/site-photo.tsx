@@ -38,7 +38,7 @@ export function SitePhoto({
       loading={priority ? "eager" : "lazy"}
       decoding="async"
       // @ts-expect-error fetchpriority is standard in modern HTML
-      fetchpriority={priority ? "high" : "low"}
+      fetchpriority={priority ? "high" : "auto"}
       onError={() => setFailed(true)}
     />
   );

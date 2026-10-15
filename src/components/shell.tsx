@@ -136,7 +136,7 @@ export function PageIntro({
       <header>
         <div className="page-banner">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={resolvePhoto(image)} alt={alt || ""} decoding="async" />
+          <img src={resolvePhoto(image)} alt={alt || ""} loading="eager" decoding="async" />
         </div>
         <div className="page-banner-card">
           <Crest label={kicker} />

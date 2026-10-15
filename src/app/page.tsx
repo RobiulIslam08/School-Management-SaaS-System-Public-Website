@@ -70,12 +70,14 @@ export default async function HomePage() {
   const restNews = news.slice(1);
   const groups = ["early", "primary", "junior", "secondary"].filter((key) => classes.some((item) => band(item.level) === key));
   const whyAlbum = albums[0];
-  const whyImage = whyAlbum?.coverUrl || config.heroImageUrl;
+  const whyImage = whyAlbum?.coverUrl || config.heroImageUrl || "/media/campus.webp";
   const whyCaption = whyAlbum ? pick(lang, whyAlbum.titleBn, whyAlbum.titleEn) : (lang === "bn" ? "ক্যাম্পাস" : "Campus");
+  const heroImage = config.heroImageUrl || albums[0]?.coverUrl || "/media/campus.webp";
   const heroTitle = pick(lang, config.heroTitleBn, config.heroTitleEn) || school.name;
   const heroSubtitle = pick(lang, config.heroSubtitleBn, config.heroSubtitleEn) || school.motto;
   const bn = lang === "bn";
   const principalPerson = people.find((person) => person.board === "principal");
+  const principalPhoto = config.principalPhotoUrl || principalPerson?.photoUrl || "/media/portrait-0.webp";
   const facts = [
     school.eiin ? { label: "EIIN", value: school.eiin } : null,
     school.address ? { label: bn ? "ঠিকানা" : "Address", value: school.address } : null,
@@ -140,7 +142,7 @@ export default async function HomePage() {
       ) : null}
 
       <HeroStage
-        image={config.heroImageUrl}
+        image={heroImage}
         alt={school.name}
         seal={[school.eiin ? `EIIN ${school.eiin}` : "", school.academicYear || ""].filter(Boolean).join(" · ")}
       >
@@ -295,7 +297,7 @@ export default async function HomePage() {
               <div className="principal-layout">
                 <figure className="principal-frame">
                   <SitePhoto
-                    src={config.principalPhotoUrl}
+                    src={principalPhoto}
                     alt={config.principalName || (bn ? "প্রধান শিক্ষক" : "Principal")}
                     label={config.principalName || (bn ? "প্রধান শিক্ষক" : "Principal")}
                     className="principal-photo"
@@ -316,7 +318,7 @@ export default async function HomePage() {
               <div key={person._id} className="principal-layout">
                 <figure className="principal-frame">
                   <SitePhoto
-                    src={person.photoUrl}
+                    src={person.photoUrl || "/media/portrait-1.webp"}
                     alt={person.name}
                     label={person.name}
                     className="principal-photo"

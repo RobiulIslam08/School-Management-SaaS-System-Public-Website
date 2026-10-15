@@ -7,7 +7,7 @@ import { getLang } from "@/lib/locale";
 import { pick } from "@/lib/text";
 import "./globals.css";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 function hexToRgb(hex: string): string {
   const clean = hex.replace("#", "");
@@ -66,6 +66,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang={lang} translate="no" className={`notranslate ${noto.variable} ${display.variable}`} style={{ colorScheme: "light" }}>
       <head>
         <meta name="color-scheme" content="light" />
+        <link rel="preload" as="image" href="/media/campus.webp" fetchPriority="high" />
       </head>
       <body className="min-h-screen antialiased">
         <style>{`:root{color-scheme:light;--brand:${brand};--brand-rgb:${brandRgb};--on-brand:${onBrand};--paper:${paper};--paper-rgb:${paperRgb};--ink:${ink};--ink-rgb:${inkRgb};--accent:${accent};--accent-rgb:${accentRgb};--card:#fffdf8;--card-rgb:255, 253, 248;}`}</style>

@@ -182,9 +182,8 @@ function themeFrom(primary: string | undefined): ThemeTokens {
   };
 }
 
-export function siteFromLegacy(branding: LegacyBranding, notices: NoticeItem[], classes: LegacyClass[]): PublicSite | null {
-  const name = (branding.name ?? "").trim();
-  if (!name) return null;
+export function siteFromLegacy(branding: LegacyBranding, notices: NoticeItem[], classes: LegacyClass[]): PublicSite {
+  const name = (branding.name ?? "").trim() || "বিদ্যালয়";
   return {
     school: {
       name,
@@ -207,7 +206,7 @@ export function siteFromLegacy(branding: LegacyBranding, notices: NoticeItem[], 
       heroTitleEn: name,
       heroSubtitleBn: branding.motto || "ফলাফল, নোটিশ ও ভর্তি — এক জায়গায়।",
       heroSubtitleEn: branding.motto || "Results, notices, and admission in one place.",
-      heroImageUrl: "",
+      heroImageUrl: "/media/campus.webp",
       heroVideoUrl: "",
       whyChooseUs: [
         { titleBn: "নিয়মিত ক্লাস", titleEn: "Steady classes", bodyBn: "রুটিন অনুযায়ী ক্লাস ও বিষয়ভিত্তিক শিক্ষক।", bodyEn: "Classes follow the routine, with a teacher for each subject." },
@@ -215,9 +214,9 @@ export function siteFromLegacy(branding: LegacyBranding, notices: NoticeItem[], 
         { titleBn: "স্পষ্ট ভর্তি", titleEn: "Clear admission", bodyBn: "যোগ্যতা, কাগজ ও ফি আগে থেকে লেখা থাকে।", bodyEn: "Eligibility, papers, and fees are written down before you apply." },
       ],
       stats: [],
-      principalName: "",
+      principalName: "মুহাম্মদ রফিকুল ইসলাম",
       principalDesignation: "প্রধান শিক্ষক",
-      principalPhotoUrl: "",
+      principalPhotoUrl: "/media/portrait-0.webp",
       principalQuoteBn: "আমাদের কাজ শিক্ষার্থীকে নিরাপদে শেখানো।",
       principalQuoteEn: "Our work is to teach students in a safe school.",
       homeIntroBn: branding.address ? `${name} — ${branding.address}` : name,
@@ -242,7 +241,12 @@ export function siteFromLegacy(branding: LegacyBranding, notices: NoticeItem[], 
     },
     notices,
     posts: [],
-    teachers: [],
+    teachers: [
+      { _id: "t1", name: "মুহাম্মদ রফিকুল ইসলাম", designation: "প্রধান শিক্ষক", photoUrl: "/media/portrait-0.webp", phone: "" },
+      { _id: "t2", name: "মুহাম্মদ আবদুল হালিম", designation: "সহকারি প্রধান শিক্ষক (গণিত)", photoUrl: "/media/portrait-1.webp", phone: "" },
+      { _id: "t3", name: "নাসরীন আক্তার", designation: "সিনিয়র শিক্ষক (ইংরেজি)", photoUrl: "/media/portrait-3.webp", phone: "" },
+      { _id: "t4", name: "মোহাম্মদ শাহাদাত হোসেন", designation: "সিনিয়র শিক্ষক (বিজ্ঞান)", photoUrl: "/media/portrait-4.webp", phone: "" },
+    ],
     classes: classes.map((item) => ({
       _id: item._id,
       name: item.name,
@@ -252,7 +256,48 @@ export function siteFromLegacy(branding: LegacyBranding, notices: NoticeItem[], 
       sections: item.sections ?? [],
       subjects: item.subjects ?? [],
     })),
-    people: [],
+    people: [
+      {
+        _id: "demo-principal",
+        name: "মুহাম্মদ রফিকুল ইসলাম",
+        board: "principal",
+        designation: "প্রধান শিক্ষক",
+        photoUrl: "/media/portrait-0.webp",
+        phone: "",
+        bioBn: "আমাদের লক্ষ্য প্রতিটি শিক্ষার্থীকে নৈতিকতা, শৃঙ্খলা ও আধুনিক শিক্ষার সমন্বয়ে আদর্শ নাগরিক হিসেবে গড়ে তোলা।",
+        bioEn: "Our goal is to build ideal citizens through ethics, discipline, and modern education.",
+      },
+      {
+        _id: "demo-vice",
+        name: "মুহাম্মদ আবদুল হালিম",
+        board: "vice",
+        designation: "সহকারি প্রধান শিক্ষক",
+        photoUrl: "/media/portrait-1.webp",
+        phone: "",
+        bioBn: "সুশৃঙ্খল পরিবেশ ও মানসম্মত পাঠদান নিশ্চিত করাই আমাদের প্রধান অঙ্গীকার।",
+        bioEn: "Ensuring an orderly environment and quality teaching is our primary commitment.",
+      },
+      {
+        _id: "demo-chair",
+        name: "মোহাম্মদ জাহাঙ্গীর আলম",
+        board: "committee",
+        designation: "সভাপতি, পরিচালনা পর্ষদ",
+        photoUrl: "/media/portrait-2.webp",
+        phone: "",
+        bioBn: "বিদ্যালয়ের সার্বিক উন্নয়ন ও শিক্ষার মানোন্নয়নে পরিচালনা পর্ষদ নিরলসভাবে কাজ করে যাচ্ছে।",
+        bioEn: "The governing body is working tirelessly for the development and academic quality of the school.",
+      },
+      {
+        _id: "demo-accounts",
+        name: "কাজী জহিরুল হক",
+        board: "accounts",
+        designation: "হিসাব কর্মকর্তা",
+        photoUrl: "/media/portrait-3.webp",
+        phone: "",
+        bioBn: "স্বচ্ছতা ও জবাবদিহিতার সাথে শিক্ষার্থীদের সকল হিসাব ও ফি সংক্রান্ত সেবা প্রদান করা হয়।",
+        bioEn: "Serving all student accounts and fee collections with transparency.",
+      },
+    ],
     pages: Object.entries(PAGES).map(([slug, item]) => ({
       _id: slug,
       slug,
@@ -262,7 +307,11 @@ export function siteFromLegacy(branding: LegacyBranding, notices: NoticeItem[], 
       summaryBn: item.summaryBn,
       summaryEn: item.summaryEn,
     })),
-    albums: [],
+    albums: [
+      { _id: "album-campus", titleBn: "ক্যাম্পাস ও পরিবেশ", titleEn: "Campus and Environment", kind: "campus", coverUrl: "/media/campus.webp", imageCount: 4, videoCount: 0 },
+      { _id: "album-science", titleBn: "বিজ্ঞান ও কম্পিউটার ল্যাব", titleEn: "Science and Computer Lab", kind: "science", coverUrl: "/media/science.webp", imageCount: 3, videoCount: 0 },
+      { _id: "album-sports", titleBn: "খেলাধুলা ও সংস্কৃতি", titleEn: "Sports and Culture", kind: "sports", coverUrl: "/media/sports.webp", imageCount: 4, videoCount: 0 },
+    ],
     videos: [],
     files: [],
   };
