@@ -30,7 +30,7 @@ export async function PeopleDirectory({
   visit?: string[];
   links?: Array<{ href: string; label: string }>;
   people: PersonItem[];
-  leaders?: PersonItem[];
+  leaders?: Array<PersonItem & { slogan?: string; noLink?: boolean }>;
 }) {
   const [site, lang] = await Promise.all([getSite(), getLang()]);
   if (!site) return <p className="p-8">The school site could not be loaded.</p>;
@@ -92,7 +92,8 @@ export async function PeopleDirectory({
           photoUrl={person.photoUrl}
           message={pick(lang, person.bioBn, person.bioEn)}
           phone={person.board === "committee" ? undefined : person.phone}
-          href={personHref(person)}
+          href={person.noLink ? undefined : personHref(person)}
+          slogan={person.slogan}
         />
       ))}
       {people.length ? <PeopleGrid people={people} /> : leaders.length ? null : (
@@ -110,6 +111,7 @@ export function ProfileFrame({
   message,
   phone,
   href,
+  slogan,
 }: {
   name: string;
   designation?: string;
@@ -117,6 +119,7 @@ export function ProfileFrame({
   message?: string;
   phone?: string;
   href?: string;
+  slogan?: string;
 }) {
   const frame = (
     <>
@@ -130,9 +133,14 @@ export function ProfileFrame({
           )}
         </div>
         <div>
-          <h2 className="text-2xl font-semibold">{name}</h2>
+          <h2 className="text-2xl font-semibold text-brand">{name}</h2>
           {designation ? <p className="mt-1 text-sm text-muted">{designation}</p> : null}
           {phone ? <p className="mt-2 text-sm font-medium text-brand">{phone}</p> : null}
+          {slogan ? (
+            <blockquote className="my-3.5 border-l-4 border-accent bg-paper/60 p-3.5 rounded-r-xl italic text-brand shadow-sm">
+              <p className="text-base font-semibold leading-relaxed md:text-lg">“{slogan}”</p>
+            </blockquote>
+          ) : null}
           {message ? <p className="leader-message">{message}</p> : null}
         </div>
       </div>

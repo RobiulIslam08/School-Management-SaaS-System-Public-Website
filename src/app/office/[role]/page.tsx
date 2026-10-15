@@ -77,6 +77,23 @@ const ROLES: Record<string, { bn: string; en: string; noteBn: string; noteEn: st
   },
 };
 
+const ROLE_SLOGANS: Record<string, { bn: string; en: string }> = {
+  principal: {
+    bn: "আমাদের কাজ শিক্ষার্থীকে নিরাপদে শেখানো।",
+    en: "Our work is to teach students in a safe school.",
+  },
+  vice: {
+    bn: "নিয়মানুবর্তিতা, সময়নিষ্ঠতা ও শিক্ষার সুষ্ঠু সমন্বয়।",
+    en: "Discipline, punctuality, and seamless academic coordination.",
+  },
+  exam: {
+    bn: "স্বচ্ছতা, নির্ভুল মূল্যায়ন ও সময়মতো ফলাফল।",
+    en: "Transparency, accurate assessment, and timely results.",
+  },
+};
+
+const DIRECT_BANI_ROLES = new Set(["principal", "vice", "exam"]);
+
 export default async function Page({ params }: { params: Promise<{ role: string }> }) {
   const { role } = await params;
   const label = ROLES[role];
@@ -90,14 +107,55 @@ export default async function Page({ params }: { params: Promise<{ role: string 
     duties: lang === "bn" ? label.dutiesBn : label.dutiesEn,
     visit: lang === "bn" ? label.visitBn : label.visitEn,
   });
+
+  let listed = filterPeople(site, [role]);
+  if (role === "principal" && listed.length === 0 && (site.config.principalName || site.config.principalPhotoUrl)) {
+    listed = [
+      {
+        _id: "principal-site",
+        board: "principal",
+        name: site.config.principalName || (lang === "bn" ? "অধ্যক্ষ" : "Principal"),
+        designation: site.config.principalDesignation || (lang === "bn" ? "প্রধান শিক্ষক" : "Principal"),
+        photoUrl: site.config.principalPhotoUrl,
+        bioBn: site.config.principalQuoteBn,
+        bioEn: site.config.principalQuoteEn,
+        phone: site.config.phone,
+      },
+    ];
+  }
+
+  const isDirectBani = DIRECT_BANI_ROLES.has(role);
+  let slogan: string | undefined;
+  if (isDirectBani) {
+    if (role === "principal") {
+      slogan = pick(lang, site.config.principalQuoteBn, site.config.principalQuoteEn) || (lang === "bn" ? ROLE_SLOGANS.principal.bn : ROLE_SLOGANS.principal.en);
+    } else {
+      slogan = lang === "bn" ? ROLE_SLOGANS[role]?.bn : ROLE_SLOGANS[role]?.en;
+    }
+  }
+
+  const leaders = isDirectBani
+    ? listed.map((person) => ({
+        ...person,
+        slogan,
+        noLink: true,
+      }))
+    : [];
+  const people = isDirectBani ? [] : listed;
+
   return (
     <PeopleDirectory
       title={pick(lang, child?.labelBn, child?.labelEn) || (lang === "bn" ? label.bn : label.en)}
-      summary={lang === "bn" ? "এই ডেস্কে কী হয়, কখন আসবেন, এবং কে দায়িত্বে।" : "What this desk does, when to visit, and who is in charge."}
+      summary={
+        isDirectBani
+          ? (lang === "bn" ? `${label.bn}-এর বাণী, মূল স্লোগান ও ডেস্কে সাক্ষাতের তথ্য।` : `Message, slogan, and visit details for the ${label.en}.`)
+          : (lang === "bn" ? "এই ডেস্কে কী হয়, কখন আসবেন, এবং কে দায়িত্বে।" : "What this desk does, when to visit, and who is in charge.")
+      }
       note={copy.note}
       duties={copy.duties}
       visit={copy.visit}
-      people={filterPeople(site, [role])}
+      leaders={leaders}
+      people={people}
     />
   );
 }

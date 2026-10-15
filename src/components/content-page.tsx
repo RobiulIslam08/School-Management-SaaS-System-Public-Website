@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Blocks } from "@/components/blocks";
 import { PageIntro, Shell } from "@/components/shell";
@@ -61,13 +62,13 @@ export async function HubPage({ menuKey }: { menuKey: string }) {
           const page = pages.find((item) => child.href === `/${item.menuKey}/${item.slug}` || child.href === `/${item.slug}`);
           const blurb = page ? pick(lang, page.summaryBn, page.summaryEn) : pick(lang, BLURB[child.key]?.bn, BLURB[child.key]?.en);
           return (
-            <a key={child.key} className="hub-card" href={child.href}>
+            <Link key={child.key} className="hub-card" href={child.href} prefetch={true}>
               <strong>{String(index + 1).padStart(2, "0")}</strong>
               <span>
                 <span className="block text-base font-semibold text-brand">{pick(lang, child.labelBn, child.labelEn)}</span>
                 {blurb ? <span className="mt-1 block text-sm text-muted">{blurb}</span> : null}
               </span>
-            </a>
+            </Link>
           );
         })}
       </div>

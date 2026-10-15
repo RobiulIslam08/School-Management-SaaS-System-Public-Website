@@ -127,7 +127,7 @@ export function SiteNav({
           const current = isCurrent(item.href, path) || children.some((child) => isCurrent(child.href, path));
           if (!children.length) {
             return (
-              <Link key={item.key} className={current ? "nav-link is-current" : "nav-link"} href={itemHref(item)}>
+              <Link key={item.key} className={current ? "nav-link is-current" : "nav-link"} href={itemHref(item)} prefetch={true}>
                 {label}
               </Link>
             );
@@ -149,7 +149,7 @@ export function SiteNav({
                 if (!event.currentTarget.contains(event.relatedTarget as Node | null)) disarm(event.currentTarget);
               }}
             >
-              <Link href={item.href}>{label}</Link>
+              <Link href={item.href} prefetch={true}>{label}</Link>
               <button
                 type="button"
                 className="nav-toggle"
@@ -164,13 +164,13 @@ export function SiteNav({
                   <div className="menu-rail">
                     <p className="section-kicker">{bn ? "অধ্যায়" : "Section"}</p>
                     <p className="display menu-rail-title">{label}</p>
-                    <Link className="menu-all" href={item.href}>
+                    <Link className="menu-all" href={item.href} prefetch={true}>
                       {bn ? "সব দেখুন" : "View all"}
                     </Link>
                   </div>
                   <div className={children.length > 4 ? "menu-links menu-links-split" : "menu-links"}>
                     {children.map((child, childIndex) => (
-                      <Link key={child.key} href={child.href}>
+                      <Link key={child.key} href={child.href} prefetch={true}>
                         <span className="menu-index">{indexLabel(childIndex + 1, lang)}</span>
                         <span>{pick(lang, child.labelBn, child.labelEn)}</span>
                       </Link>
@@ -220,7 +220,7 @@ export function SiteNav({
                   return (
                     <div key={item.key} className="drawer-group">
                       <div className="drawer-row">
-                        <Link href={itemHref(item)} onClick={() => setDrawer(false)}>
+                        <Link href={itemHref(item)} onClick={() => setDrawer(false)} prefetch={true}>
                           {label}
                         </Link>
                         {children.length ? (
@@ -236,7 +236,7 @@ export function SiteNav({
                       </div>
                       {expanded
                         ? children.map((child, childIndex) => (
-                            <Link key={child.key} className="drawer-child" href={child.href} onClick={() => setDrawer(false)}>
+                            <Link key={child.key} className="drawer-child" href={child.href} onClick={() => setDrawer(false)} prefetch={true}>
                               <span className="menu-index">{indexLabel(childIndex + 1, lang)}</span>
                               {pick(lang, child.labelBn, child.labelEn)}
                             </Link>

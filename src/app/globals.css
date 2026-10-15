@@ -1,14 +1,28 @@
 @import "tailwindcss";
 
 :root {
+  color-scheme: light;
   --paper: #f4efe6;
+  --paper-rgb: 244, 239, 230;
   --ink: #1c3326;
+  --ink-rgb: 28, 51, 38;
   --muted: #5c564e;
   --line: #e4dccf;
   --brand: #14532d;
+  --brand-rgb: 20, 83, 45;
   --on-brand: #ffffff;
   --accent: #8a6a32;
+  --accent-rgb: 138, 106, 50;
   --card: #fffdf8;
+  --card-rgb: 255, 253, 248;
+}
+
+html, body {
+  color-scheme: light;
+}
+
+button, input, select, textarea {
+  color-scheme: light;
 }
 
 @theme inline {
@@ -26,7 +40,7 @@
 
 body {
   background:
-    radial-gradient(1200px 420px at 100% -10%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 60%),
+    radial-gradient(1200px 420px at 100% -10%, rgba(var(--accent-rgb, 138, 106, 50), 0.18), transparent 60%),
     var(--paper);
   color: var(--ink);
   font-family: var(--font-noto), sans-serif;
@@ -48,7 +62,7 @@ body {
   content: "";
   height: 1px;
   width: 2.5rem;
-  background: color-mix(in srgb, var(--accent) 80%, transparent);
+  background: rgba(var(--accent-rgb, 138, 106, 50), 0.8);
 }
 .crest i {
   width: 0.45rem;
@@ -65,20 +79,25 @@ body {
   border-radius: 999px;
   padding: 0 1.25rem;
   font-weight: 650;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 .btn-solid {
-  background: var(--brand);
+  background-color: var(--brand);
   color: var(--on-brand);
+  border: none;
 }
 .btn-ghost {
-  border: 1px solid color-mix(in srgb, white 55%, transparent);
-  background: color-mix(in srgb, white 12%, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.15);
   color: white;
   backdrop-filter: blur(8px);
 }
 .btn-line {
   border: 1px solid var(--line);
-  background: var(--card);
+  background-color: var(--card);
   color: var(--ink);
 }
 
@@ -102,17 +121,17 @@ body {
   min-height: 32rem;
   align-items: flex-end;
   padding: 1.25rem 0 3.4rem;
-  background: linear-gradient(180deg, transparent 18%, color-mix(in srgb, var(--paper) 55%, transparent) 48%, color-mix(in srgb, var(--paper) 82%, transparent) 100%);
+  background: linear-gradient(180deg, transparent 18%, rgba(var(--paper-rgb, 244, 239, 230), 0.55) 48%, rgba(var(--paper-rgb, 244, 239, 230), 0.85) 100%);
 }
 .hero-plate {
   width: min(36rem, calc(100% - 2rem));
   margin-left: 1rem;
   border-top: 3px solid var(--accent);
   border-radius: 0 1.15rem 1.15rem 0;
-  background: color-mix(in srgb, var(--card) 94%, transparent);
+  background: rgba(var(--card-rgb, 255, 253, 248), 0.94);
   padding: 1.25rem 1.3rem 1.4rem;
   color: var(--ink);
-  box-shadow: 0 18px 40px color-mix(in srgb, var(--brand) 16%, transparent);
+  box-shadow: 0 18px 40px rgba(var(--brand-rgb, 20, 83, 45), 0.16);
   backdrop-filter: blur(10px);
   animation: rise 0.7s ease both;
 }
@@ -131,7 +150,7 @@ body {
   .hero-shade {
     min-height: min(72vh, 640px);
     align-items: center;
-    background: linear-gradient(90deg, color-mix(in srgb, var(--paper) 28%, transparent) 0%, transparent 58%);
+    background: linear-gradient(90deg, rgba(var(--paper-rgb, 244, 239, 230), 0.28) 0%, transparent 58%);
   }
   .hero-plate { margin-left: max(1rem, calc((100% - 72rem) / 2)); }
   .hero-seal {
@@ -143,7 +162,7 @@ body {
     translate: 0 -50%;
     writing-mode: vertical-rl;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--brand) 78%, transparent);
+    background: rgba(var(--brand-rgb, 20, 83, 45), 0.85);
     padding: 1.1rem 0.45rem;
     font-size: 0.72rem;
     font-weight: 700;
@@ -157,7 +176,7 @@ body {
   position: relative;
   height: 7.5rem;
   overflow: hidden;
-  background: color-mix(in srgb, var(--brand) 18%, var(--paper));
+  background: rgba(var(--brand-rgb, 20, 83, 45), 0.15);
 }
 @media (min-width: 768px) {
   .page-banner { height: 11rem; }
@@ -179,7 +198,7 @@ body {
 }
 
 .band-soft {
-  background: color-mix(in srgb, var(--brand) 9%, var(--paper));
+  background: rgba(var(--brand-rgb, 20, 83, 45), 0.08);
   color: var(--ink);
 }
 .band-brand {
@@ -191,7 +210,7 @@ body {
   position: relative;
   overflow: hidden;
   border-radius: 1.25rem 1.25rem 0.4rem 1.25rem;
-  background: color-mix(in srgb, var(--brand) 16%, var(--card));
+  background: rgba(var(--brand-rgb, 20, 83, 45), 0.12);
 }
 .portrait img,
 .portrait .photo-fallback {
@@ -209,7 +228,7 @@ body {
   border-radius: 1.25rem;
   border: 1px solid var(--line);
   background: var(--card);
-  box-shadow: 0 16px 40px color-mix(in srgb, var(--brand) 10%, transparent);
+  box-shadow: 0 16px 40px rgba(var(--brand-rgb, 20, 83, 45), 0.1);
 }
 .staff-card .portrait {
   border-radius: 0;
@@ -308,7 +327,7 @@ body {
   border: 1px solid var(--line);
   border-radius: 1.5rem;
   background: var(--card);
-  box-shadow: 0 18px 50px color-mix(in srgb, var(--brand) 8%, transparent);
+  box-shadow: 0 18px 50px rgba(var(--brand-rgb, 20, 83, 45), 0.08);
 }
 .notice-frame-head {
   display: flex;
@@ -317,7 +336,7 @@ body {
   justify-content: space-between;
   gap: 0.75rem;
   padding: 1rem 1.1rem 0.85rem;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--brand) 10%, var(--card)), var(--card));
+  background: linear-gradient(180deg, rgba(var(--brand-rgb, 20, 83, 45), 0.08), var(--card));
 }
 .notice-frame-head input {
   width: min(100%, 22rem);
@@ -365,8 +384,8 @@ body {
 }
 .notice-feature {
   border-radius: 1.1rem;
-  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line));
-  background: color-mix(in srgb, var(--accent) 8%, var(--card));
+  border: 1px solid rgba(var(--accent-rgb, 138, 106, 50), 0.4);
+  background: rgba(var(--accent-rgb, 138, 106, 50), 0.06);
   padding: 0.9rem;
 }
 .notice-rows { margin-top: 0.35rem; }
@@ -401,7 +420,7 @@ body {
 }
 .notice-pill {
   border-radius: 999px;
-  background: color-mix(in srgb, var(--brand) 12%, var(--card));
+  background: rgba(var(--brand-rgb, 20, 83, 45), 0.12);
   color: var(--brand);
   padding: 0.12rem 0.5rem;
   font-size: 0.72rem;
@@ -417,7 +436,7 @@ body {
   width: 3.35rem;
   justify-items: center;
   border-radius: 0.85rem;
-  background: color-mix(in srgb, var(--brand) 12%, #fffdf8);
+  background: rgba(var(--brand-rgb, 20, 83, 45), 0.1);
   padding: 0.4rem 0 0.3rem;
   line-height: 1.05;
 }
@@ -442,7 +461,7 @@ body {
   border-radius: 1.25rem;
   background: #fffdf8;
   padding: 1.5rem 1.25rem 1.75rem;
-  box-shadow: 0 18px 50px color-mix(in srgb, var(--brand) 8%, transparent);
+  box-shadow: 0 18px 50px rgba(var(--brand-rgb, 20, 83, 45), 0.08);
 }
 .notice-letter-meta {
   display: flex;
@@ -484,7 +503,7 @@ body {
   border-radius: 1.5rem;
   border: 1px solid var(--line);
   background: var(--card);
-  box-shadow: 0 18px 50px color-mix(in srgb, var(--brand) 8%, transparent);
+  box-shadow: 0 18px 50px rgba(var(--brand-rgb, 20, 83, 45), 0.08);
 }
 .sheet-brand {
   background: var(--brand);
@@ -511,7 +530,8 @@ body {
   border: 1px solid var(--line);
   background: var(--card);
   padding: 1.25rem;
-  box-shadow: 0 12px 30px color-mix(in srgb, var(--brand) 6%, transparent);
+  box-shadow: 0 12px 30px rgba(var(--brand-rgb, 20, 83, 45), 0.06);
+  transition: border-color 0.2s ease, transform 0.2s ease;
 }
 .hub-card strong {
   display: grid;
@@ -519,12 +539,13 @@ body {
   width: 2.75rem;
   place-items: center;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--brand) 12%, white);
+  background: rgba(var(--brand-rgb, 20, 83, 45), 0.12);
   color: var(--brand);
   font-family: var(--font-display), serif;
 }
 .hub-card:hover {
-  border-color: color-mix(in srgb, var(--brand) 35%, var(--line));
+  border-color: rgba(var(--brand-rgb, 20, 83, 45), 0.35);
+  transform: translateY(-2px);
 }
 
 .article {
@@ -608,7 +629,7 @@ body {
 .article-list {
   border-radius: 1rem;
   border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--brand) 7%, var(--card));
+  background: rgba(var(--brand-rgb, 20, 83, 45), 0.07);
   padding: 0.35rem 1rem;
 }
 .article-list li {
@@ -696,7 +717,7 @@ body {
 .photo-fallback {
   display: grid;
   place-items: center;
-  background: color-mix(in srgb, var(--brand) 16%, var(--card));
+  background: rgba(var(--brand-rgb, 20, 83, 45), 0.12);
   color: var(--brand);
   font-family: var(--font-display), serif;
   font-size: 1.75rem;
@@ -713,7 +734,7 @@ body {
   flex-shrink: 0;
   align-items: center;
   padding: 0 1rem;
-  background: color-mix(in srgb, black 18%, var(--brand));
+  background: rgba(0, 0, 0, 0.2);
   font-size: 0.8rem;
   font-weight: 700;
 }
@@ -752,7 +773,7 @@ body {
   .section-title { font-size: 2.15rem; }
 }
 .band-brand .section-title { color: inherit; }
-.band-brand .section-kicker { color: color-mix(in srgb, var(--on-brand) 78%, var(--accent)); }
+.band-brand .section-kicker { color: rgba(255, 255, 255, 0.85); }
 .section-link { font-size: 0.9rem; font-weight: 700; color: var(--brand); }
 
 .hero-facts {
@@ -762,7 +783,7 @@ body {
 }
 .hero-facts .fact-strip {
   margin-top: 0;
-  box-shadow: 0 16px 40px color-mix(in srgb, var(--brand) 14%, transparent);
+  box-shadow: 0 16px 40px rgba(var(--brand-rgb, 20, 83, 45), 0.14);
 }
 .fact-strip {
   display: grid;
@@ -807,7 +828,7 @@ body {
   border-radius: 1.25rem;
   background: var(--card);
   padding: 1.25rem 1.35rem 1.15rem;
-  box-shadow: 0 16px 40px color-mix(in srgb, var(--brand) 8%, transparent);
+  box-shadow: 0 16px 40px rgba(var(--brand-rgb, 20, 83, 45), 0.08);
 }
 .task-card h2 {
   margin-top: 0.35rem;
@@ -822,9 +843,9 @@ body {
   background: var(--brand);
   color: var(--on-brand);
 }
-.task-card-brand .task-copy { color: color-mix(in srgb, var(--on-brand) 82%, transparent); }
+.task-card-brand .task-copy { color: rgba(255, 255, 255, 0.85); }
 .task-card-brand .section-kicker,
-.task-card-brand .task-go { color: color-mix(in srgb, var(--on-brand) 78%, var(--accent)); }
+.task-card-brand .task-go { color: var(--on-brand); }
 
 .news-layout { display: grid; gap: 1.5rem; margin-top: 1.5rem; }
 @media (min-width: 900px) {
@@ -873,7 +894,7 @@ body {
 .programme-date {
   min-width: 3.6rem;
   border-radius: 0.8rem;
-  background: color-mix(in srgb, var(--brand) 10%, var(--card));
+  background: rgba(var(--brand-rgb, 20, 83, 45), 0.1);
   color: var(--brand);
   padding: 0.45rem 0.35rem;
   text-align: center;
@@ -910,7 +931,7 @@ body {
 .principal-plate {
   max-width: 14rem;
   border-radius: 0 0 1.25rem 1.25rem;
-  background: color-mix(in srgb, white 14%, transparent);
+  background: rgba(255, 255, 255, 0.15);
   padding: 0.75rem 0.9rem;
 }
 .principal-plate strong { display: block; }
@@ -950,7 +971,7 @@ body {
 }
 .why-caption { margin-top: 0.55rem; font-size: 0.85rem; color: var(--muted); }
 
-.stat-band { background: color-mix(in srgb, var(--brand) 9%, var(--paper)); }
+.stat-band { background: rgba(var(--brand-rgb, 20, 83, 45), 0.08); }
 .stat-grid { display: grid; }
 .stat-grid > p { padding: 0.35rem 0.25rem; }
 .stat-grid > p + p { border-top: 1px solid var(--line); }
@@ -1036,7 +1057,7 @@ body {
   display: block;
   overflow: hidden;
   border-radius: 1.25rem;
-  background: color-mix(in srgb, var(--brand) 16%, var(--card));
+  background: rgba(var(--brand-rgb, 20, 83, 45), 0.12);
 }
 .gallery-tile img,
 .gallery-tile .photo-fallback {
@@ -1050,7 +1071,7 @@ body {
   bottom: 0;
   left: 0;
   padding: 2.4rem 1rem 0.9rem;
-  background: linear-gradient(transparent, color-mix(in srgb, var(--brand) 88%, black));
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
   color: white;
   font-weight: 650;
 }
@@ -1070,7 +1091,7 @@ body {
 .admit-meta {
   margin-top: 0.7rem;
   font-size: 0.88rem;
-  color: color-mix(in srgb, var(--on-brand) 82%, transparent);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .explore-grid {
@@ -1170,7 +1191,7 @@ body {
   display: block;
   overflow: hidden;
   border-radius: 1.25rem;
-  background: color-mix(in srgb, var(--brand) 16%, var(--card));
+  background: rgba(var(--brand-rgb, 20, 83, 45), 0.12);
 }
 .film-card img,
 .film-card .photo-fallback {
@@ -1188,7 +1209,7 @@ body {
   justify-content: space-between;
   gap: 0.75rem;
   padding: 2.4rem 1rem 0.85rem;
-  background: linear-gradient(transparent, color-mix(in srgb, var(--brand) 90%, black));
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.88));
   color: white;
 }
 .film-caption em { font-style: normal; font-size: 0.8rem; }
@@ -1269,7 +1290,7 @@ body {
 .seal-chip {
   display: inline-flex;
   align-items: center;
-  border: 1px solid color-mix(in srgb, var(--accent) 75%, white);
+  border: 1px solid rgba(var(--accent-rgb, 138, 106, 50), 0.6);
   border-radius: 999px;
   padding: 0.05rem 0.55rem;
   font-size: 0.68rem;
@@ -1286,11 +1307,11 @@ body {
 .utility-rule {
   width: 1px;
   height: 0.85rem;
-  background: color-mix(in srgb, var(--on-brand) 45%, transparent);
+  background: rgba(255, 255, 255, 0.45);
 }
 .masthead {
   border-bottom: 1px solid var(--line);
-  background: color-mix(in srgb, var(--card) 94%, white);
+  background: rgba(255, 253, 248, 0.96);
   backdrop-filter: blur(12px);
 }
 .masthead > div { min-height: 4.4rem; }
@@ -1406,7 +1427,7 @@ body {
   color: var(--muted);
 }
 .nav-toggle:hover,
-.drawer-row > button:hover { background: color-mix(in srgb, var(--brand) 8%, transparent); color: var(--brand); }
+.drawer-row > button:hover { background: rgba(var(--brand-rgb, 20, 83, 45), 0.08); color: var(--brand); }
 .nav-caret { transition: transform 0.2s ease; }
 .nav-caret.is-open { transform: rotate(180deg); }
 .menu-fly {
@@ -1422,12 +1443,12 @@ body {
   border-top: 3px solid var(--accent);
   border-radius: 0.9rem;
   background: var(--card);
-  box-shadow: 0 22px 50px color-mix(in srgb, var(--brand) 16%, transparent);
+  box-shadow: 0 22px 50px rgba(var(--brand-rgb, 20, 83, 45), 0.16);
   animation: rise 0.18s ease both;
 }
 .nav-item[data-align="end"] .menu-fly { left: auto; right: 0; }
 .menu-rail {
-  background: color-mix(in srgb, var(--brand) 7%, var(--card));
+  background: rgba(var(--brand-rgb, 20, 83, 45), 0.06);
   padding: 1rem 0.9rem;
 }
 .menu-rail-title {
@@ -1455,11 +1476,16 @@ body {
   padding: 0.45rem 0.5rem;
   font-size: 0.84rem;
   line-height: 1.35;
+  color: var(--ink);
+  background: transparent;
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 .menu-links a:hover,
 .drawer-child:hover {
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  background: rgba(var(--accent-rgb, 138, 106, 50), 0.12);
   box-shadow: inset 3px 0 0 var(--accent);
+  color: var(--ink);
 }
 .menu-index {
   flex-shrink: 0;
@@ -1486,7 +1512,7 @@ body {
   position: fixed;
   inset: 0;
   z-index: 80;
-  background: color-mix(in srgb, var(--brand) 45%, transparent);
+  background: rgba(var(--brand-rgb, 20, 83, 45), 0.45);
 }
 .drawer-panel {
   margin-left: auto;
@@ -1497,7 +1523,7 @@ body {
   overflow-y: auto;
   background: var(--card);
   padding: 1rem 1rem 2rem;
-  box-shadow: -18px 0 40px color-mix(in srgb, var(--brand) 18%, transparent);
+  box-shadow: -18px 0 40px rgba(var(--brand-rgb, 20, 83, 45), 0.18);
 }
 .drawer-brand {
   display: grid;
@@ -2090,7 +2116,7 @@ main select:focus,
 main textarea:focus {
   outline: 0;
   border-color: var(--brand);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand) 15%, transparent);
+  box-shadow: 0 0 0 4px rgba(var(--brand-rgb, 20, 83, 45), 0.15);
 }
 main label { font-weight: 600; font-size: 0.9rem; }
 

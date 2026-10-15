@@ -28,6 +28,15 @@ export default async function Page({ params }: { params: Promise<{ role: string;
         photoUrl={person.photoUrl}
         message={pick(lang, person.bioBn, person.bioEn)}
         phone={person.phone}
+        slogan={
+          role === "principal"
+            ? pick(lang, site.config.principalQuoteBn, site.config.principalQuoteEn) || (lang === "bn" ? "আমাদের কাজ শিক্ষার্থীকে নিরাপদে শেখানো।" : "Our work is to teach students in a safe school.")
+            : role === "vice"
+            ? (lang === "bn" ? "নিয়মানুবর্তিতা, সময়নিষ্ঠতা ও শিক্ষার সুষ্ঠু সমন্বয়।" : "Discipline, punctuality, and seamless academic coordination.")
+            : role === "exam"
+            ? (lang === "bn" ? "স্বচ্ছতা, নির্ভুল মূল্যায়ন ও সময়মতো ফলাফল।" : "Transparency, accurate assessment, and timely results.")
+            : undefined
+        }
       />
     </Shell>
   );

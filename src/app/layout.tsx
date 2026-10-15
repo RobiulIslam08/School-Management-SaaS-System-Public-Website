@@ -1,11 +1,24 @@
 import type { Metadata } from "next";
 import { Fraunces, Noto_Sans_Bengali } from "next/font/google";
+import { Suspense } from "react";
+import { RouteProgress } from "@/components/route-progress";
 import { getSite, safeColor } from "@/lib/api";
 import { getLang } from "@/lib/locale";
 import { pick } from "@/lib/text";
 import "./globals.css";
 
 export const dynamic = "force-dynamic";
+
+function hexToRgb(hex: string): string {
+  const clean = hex.replace("#", "");
+  const normalized = clean.length === 3 ? clean.split("").map((c) => c + c).join("") : clean;
+  const num = parseInt(normalized, 16);
+  if (isNaN(num)) return "20, 83, 45";
+  const r = (num >> 16) & 255;
+  const g = (num >> 8) & 255;
+  const b = num & 255;
+  return `${r}, ${g}, ${b}`;
+}
 
 const noto = Noto_Sans_Bengali({
   subsets: ["bengali"],
@@ -28,6 +41,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: { default: name, template: `%s · ${name}` },
     description,
+    other: {
+      "color-scheme": "light",
+    },
     openGraph: { title: name, description, locale: lang === "bn" ? "bn_BD" : "en_US" },
   };
 }
@@ -40,11 +56,22 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const paper = safeColor(theme?.surface, "#f6f3ec");
   const ink = safeColor(theme?.ink, "#1c1917");
   const accent = safeColor(theme?.accent, "#8a6a32");
+  const brandRgb = hexToRgb(brand);
+  const accentRgb = hexToRgb(accent);
+  const paperRgb = hexToRgb(paper);
+  const inkRgb = hexToRgb(ink);
   const lang = await getLang();
+
   return (
-    <html lang={lang} className={`${noto.variable} ${display.variable}`}>
+    <html lang={lang} translate="no" className={`notranslate ${noto.variable} ${display.variable}`} style={{ colorScheme: "light" }}>
+      <head>
+        <meta name="color-scheme" content="light" />
+      </head>
       <body className="min-h-screen antialiased">
-        <style>{`:root{--brand:${brand};--on-brand:${onBrand};--paper:${paper};--ink:${ink};--accent:${accent};--card:#fffdf8}`}</style>
+        <style>{`:root{color-scheme:light;--brand:${brand};--brand-rgb:${brandRgb};--on-brand:${onBrand};--paper:${paper};--paper-rgb:${paperRgb};--ink:${ink};--ink-rgb:${inkRgb};--accent:${accent};--accent-rgb:${accentRgb};--card:#fffdf8;--card-rgb:255, 253, 248;}`}</style>
+        <Suspense fallback={null}>
+          <RouteProgress />
+        </Suspense>
         {site ? (
           <script
             type="application/ld+json"
