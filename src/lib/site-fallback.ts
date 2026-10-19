@@ -46,10 +46,12 @@ const MENUS: MenuItem[] = [
     visible: true,
     children: [
       { key: "admission-info", href: "/admission/admission-info", labelBn: "ভর্তি তথ্য", labelEn: "Admission information", visible: true },
+      { key: "apply", href: "/admission/apply", labelBn: "অনলাইন ভর্তি আবেদন", labelEn: "Online application", visible: true },
+      { key: "admission-result", href: "/admission/result", labelBn: "ভর্তি পরীক্ষার ফলাফল", labelEn: "Admission exam result", visible: true },
+      { key: "form-download", href: "/admission/form-download", labelBn: "অফলাইন ভর্তি ফর্ম ডাউনলোড", labelEn: "Admission form download", visible: true },
       { key: "eligibility", href: "/admission/eligibility", labelBn: "যোগ্যতা ও আসন", labelEn: "Eligibility and seats", visible: true },
       { key: "documents", href: "/admission/documents", labelBn: "প্রয়োজনীয় কাগজ", labelEn: "Required documents", visible: true },
       { key: "fees-info", href: "/admission/fees-info", labelBn: "ফি তথ্য", labelEn: "Fee information", visible: true },
-      { key: "apply", href: "/admission/apply", labelBn: "অনলাইন আবেদন", labelEn: "Online application", visible: true },
     ],
   },
   {
@@ -64,7 +66,7 @@ const MENUS: MenuItem[] = [
       { key: "teachers", href: "/academic/teachers", labelBn: "শিক্ষক", labelEn: "Teachers", visible: true },
       { key: "routine", href: "/academic/routine", labelBn: "রুটিন", labelEn: "Routine", visible: true },
       { key: "syllabus", href: "/academic/syllabus", labelBn: "সিলেবাস", labelEn: "Syllabus", visible: true },
-      { key: "calendar", href: "/academic/calendar", labelBn: "একাডেমিক ক্যালেন্ডার", labelEn: "Academic calendar", visible: true },
+      { key: "calendar", href: "/academic/calendar", labelBn: "একাডেমিক ক্যালেন্ডার ও ছুটি", labelEn: "Academic calendar", visible: true },
       { key: "results", href: "/results", labelBn: "ফলাফল ও মার্কশিট", labelEn: "Results and marksheet", visible: true },
       { key: "receipts", href: "/receipts", labelBn: "জমার রসিদ", labelEn: "Payment receipts", visible: true },
       { key: "cocurricular", href: "/academic/cocurricular", labelBn: "সহশিক্ষা", labelEn: "Co-curricular", visible: true },
@@ -107,6 +109,10 @@ const MENUS: MenuItem[] = [
     labelEn: "Students",
     visible: true,
     children: [
+      { key: "student-portal", href: "/student-portal/dashboard", labelBn: "স্টুডেন্ট পোর্টাল ও লেকচার শিট", labelEn: "Student Portal & Notes", visible: true },
+      { key: "results", href: "/results", labelBn: "পরীক্ষার ফলাফল", labelEn: "Exam Results", visible: true },
+      { key: "calendar", href: "/academic/calendar", labelBn: "ছুটি ও ক্যালেন্ডার", labelEn: "Academic Calendar", visible: true },
+      { key: "display-board", href: "/board", labelBn: "লাইভ ডিসপ্লে বোর্ড", labelEn: "Live Display Board", visible: true },
       { key: "student-life", href: "/students/student-life", labelBn: "বর্তমান শিক্ষার্থী", labelEn: "Current students", visible: true },
       { key: "future", href: "/students/future", labelBn: "ভবিষ্যৎ শিক্ষার্থী", labelEn: "Future students", visible: true },
       { key: "council", href: "/students/council", labelBn: "স্টুডেন্ট কাউন্সিল", labelEn: "Student council", visible: true },

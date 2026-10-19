@@ -31,6 +31,14 @@ export function Shell({ site, lang, children }: { site: PublicSite; lang: Lang; 
             <div className="utility-actions">
               <Link href={`/locale?lang=${lang === "bn" ? "en" : "bn"}`}>{lang === "bn" ? "English" : "বাংলা"}</Link>
               <span className="utility-rule" aria-hidden="true" />
+              <Link href="/student-portal/dashboard" className="font-bold text-amber-300 hover:text-white">
+                🎓 {lang === "bn" ? "স্টুডেন্ট পোর্টাল" : "Student Portal"}
+              </Link>
+              <span className="utility-rule" aria-hidden="true" />
+              <Link href="/board" target="_blank" className="hover:underline">
+                📺 {lang === "bn" ? "লাইভ ডিসপ্লে" : "Live Board"}
+              </Link>
+              <span className="utility-rule" aria-hidden="true" />
               <a href={login}>{lang === "bn" ? "লগইন" : "Login"}</a>
             </div>
           </div>
@@ -75,9 +83,14 @@ export function Shell({ site, lang, children }: { site: PublicSite; lang: Lang; 
               <p className="font-semibold text-brand">{lang === "bn" ? "দ্রুত" : "Tasks"}</p>
               <ul className="mt-2 space-y-1 text-muted">
                 <li><Link href="/">{lang === "bn" ? "হোম" : "Home"}</Link></li>
-                <li><Link href="/results">{lang === "bn" ? "ফলাফল" : "Results"}</Link></li>
+                <li><Link href="/results">{lang === "bn" ? "পরীক্ষার ফলাফল" : "Exam Results"}</Link></li>
+                <li><Link href="/admission/result">{lang === "bn" ? "ভর্তি পরীক্ষার রেজাল্ট" : "Admission Result"}</Link></li>
+                <li><Link href="/admission/apply">{lang === "bn" ? "অনলাইন ভর্তি" : "Online Apply"}</Link></li>
+                <li><Link href="/admission/form-download">{lang === "bn" ? "ভর্তি ফর্ম ডাউনলোড" : "Admission Form Download"}</Link></li>
+                <li><Link href="/academic/calendar">{lang === "bn" ? "ছুটি ও ক্যালেন্ডার" : "Academic Calendar"}</Link></li>
+                <li><Link href="/student-portal/dashboard">{lang === "bn" ? "স্টুডেন্ট পোর্টাল (লেকচার শিট)" : "Student Portal"}</Link></li>
+                <li><Link href="/board" target="_blank">{lang === "bn" ? "লাইভ ডিসপ্লে বোর্ড" : "Live Display Board"}</Link></li>
                 {config.receiptLookupEnabled ? <li><Link href="/receipts">{lang === "bn" ? "রসিদ" : "Receipts"}</Link></li> : null}
-                <li><Link href="/admission/apply">{lang === "bn" ? "ভর্তি আবেদন" : "Apply"}</Link></li>
                 <li><Link href="/notices">{lang === "bn" ? "নোটিশ" : "Notices"}</Link></li>
                 <li><Link href="/contact">{lang === "bn" ? "যোগাযোগ" : "Contact"}</Link></li>
               </ul>

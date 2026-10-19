@@ -151,8 +151,10 @@ export default async function HomePage() {
         <h1 className="display mt-2 max-w-xl text-3xl font-semibold leading-tight text-brand md:text-[2.7rem]">{heroTitle}</h1>
         {heroSubtitle ? <p className="mt-3 max-w-lg text-sm text-muted md:text-base">{heroSubtitle}</p> : null}
         <div className="mt-5 flex flex-wrap gap-3">
-          <Link className="btn btn-solid" href="/admission/apply">{bn ? "ভর্তি আবেদন" : "Apply"}</Link>
-          <Link className="btn btn-line" href="/results">{bn ? "ফলাফল দেখুন" : "Results"}</Link>
+          <Link className="btn btn-solid" href="/admission/apply">{bn ? "অনলাইন ভর্তি আবেদন" : "Online Apply"}</Link>
+          <Link className="btn btn-line" href="/admission/result">{bn ? "ভর্তি পরীক্ষার রেজাল্ট" : "Admission Result"}</Link>
+          <Link className="btn btn-line" href="/student-portal/dashboard">{bn ? "স্টুডেন্ট পোর্টাল" : "Student Portal"}</Link>
+          <Link className="btn btn-line" href="/results">{bn ? "ফলাফল দেখুন" : "Exam Results"}</Link>
         </div>
       </HeroStage>
 
@@ -425,17 +427,37 @@ export default async function HomePage() {
             </Link>
             <Link href="/academic/calendar" className="path-card">
               <span>03</span>
-              <h3>{bn ? "ক্যালেন্ডার" : "Calendar"}</h3>
-              <p>{bn ? "ছুটি, পরীক্ষা ও শিক্ষাবর্ষের দিনপঞ্জি।" : "Holidays, exams, and the shape of the academic year."}</p>
+              <h3>{bn ? "ছুটি ও ক্যালেন্ডার" : "Calendar & Holidays"}</h3>
+              <p>{bn ? "ছুটি, পরীক্ষা ও শিক্ষাবর্ষের ইন্টারঅ্যাক্টিভ দিনপঞ্জি।" : "Holidays, exams, and the shape of the academic year."}</p>
+            </Link>
+            <Link href="/student-portal/dashboard" className="path-card">
+              <span>04</span>
+              <h3>{bn ? "স্টুডেন্ট পোর্টাল ও লেকচার শিট" : "Student Portal & Notes"}</h3>
+              <p>{bn ? "শিক্ষকদের দেওয়া লেকচার শিট, হ্যান্ডনোট ও স্টাডি ফাইল।" : "Teacher lecture sheets, study materials, and personal desk."}</p>
+            </Link>
+            <Link href="/admission/result" className="path-card">
+              <span>05</span>
+              <h3>{bn ? "ভর্তি পরীক্ষার ফলাফল" : "Admission Exam Result"}</h3>
+              <p>{bn ? "ভর্তি পরীক্ষার প্রাপ্ত নম্বর ও মেধা উত্তীর্ণ স্লিপ।" : "Check entrance exam marks and qualification status."}</p>
+            </Link>
+            <Link href="/admission/form-download" className="path-card">
+              <span>06</span>
+              <h3>{bn ? "অফলাইন ভর্তি ফর্ম" : "Admission Form Download"}</h3>
+              <p>{bn ? "অফলাইনে ভর্তির জন্য সম্পূর্ণ A4 প্রিন্টযোগ্য আবেদন ফর্ম।" : "Official printable blank admission form for offline submission."}</p>
             </Link>
             <Link href="/results" className="path-card">
-              <span>04</span>
-              <h3>{bn ? "ফলাফল" : "Results"}</h3>
+              <span>07</span>
+              <h3>{bn ? "পরীক্ষার ফলাফল" : "Exam Results"}</h3>
               <p>{bn ? "প্রকাশিত পরীক্ষা শিক্ষার্থী আইডি দিয়ে।" : "A published exam, with a student ID."}</p>
+            </Link>
+            <Link href="/board" target="_blank" className="path-card">
+              <span>08</span>
+              <h3>{bn ? "লাইভ ডিসপ্লে বোর্ড" : "Live Display Board"}</h3>
+              <p>{bn ? "ক্যাম্পাস টিভি ও নোটিশ স্ক্রিনের ফুলস্ক্রিন ডিসপ্লে।" : "Fullscreen live classroom and hallway display screen."}</p>
             </Link>
             {config.receiptLookupEnabled ? (
               <Link href="/receipts" className="path-card">
-                <span>05</span>
+                <span>09</span>
                 <h3>{bn ? "রসিদ" : "Receipts"}</h3>
                 <p>{bn ? "জমার ইতিহাস শিক্ষার্থী আইডি দিয়ে। রসিদ এই পাতা থেকে।" : "Payment history with a student ID. The receipt prints from this page."}</p>
               </Link>
