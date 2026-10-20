@@ -77,22 +77,13 @@ const ROLES: Record<string, { bn: string; en: string; noteBn: string; noteEn: st
   },
 };
 
-const ROLE_SLOGANS: Record<string, { bn: string; en: string }> = {
-  principal: {
-    bn: "আমাদের কাজ শিক্ষার্থীকে নিরাপদে শেখানো।",
-    en: "Our work is to teach students in a safe school.",
-  },
-  vice: {
-    bn: "নিয়মানুবর্তিতা, সময়নিষ্ঠতা ও শিক্ষার সুষ্ঠু সমন্বয়।",
-    en: "Discipline, punctuality, and seamless academic coordination.",
-  },
-  exam: {
-    bn: "স্বচ্ছতা, নির্ভুল মূল্যায়ন ও সময়মতো ফলাফল।",
-    en: "Transparency, accurate assessment, and timely results.",
-  },
+const PRINCIPAL_SLOGAN = {
+  bn: "আমাদের কাজ শিক্ষার্থীকে নিরাপদে শেখানো।",
+  en: "Our work is to teach students in a safe school.",
 };
 
-const DIRECT_BANI_ROLES = new Set(["principal", "vice", "exam"]);
+/** Only the principal desk uses the framed বাণী board; vice/exam use simple PeopleGrid cards. */
+const FRAMED_BANI_ROLES = new Set(["principal"]);
 
 export default async function Page({ params }: { params: Promise<{ role: string }> }) {
   const { role } = await params;
@@ -124,30 +115,26 @@ export default async function Page({ params }: { params: Promise<{ role: string 
     ];
   }
 
-  const isDirectBani = DIRECT_BANI_ROLES.has(role);
-  let slogan: string | undefined;
-  if (isDirectBani) {
-    if (role === "principal") {
-      slogan = pick(lang, site.config.principalQuoteBn, site.config.principalQuoteEn) || (lang === "bn" ? ROLE_SLOGANS.principal.bn : ROLE_SLOGANS.principal.en);
-    } else {
-      slogan = lang === "bn" ? ROLE_SLOGANS[role]?.bn : ROLE_SLOGANS[role]?.en;
-    }
-  }
+  const isFramedBani = FRAMED_BANI_ROLES.has(role);
+  const slogan = isFramedBani
+    ? pick(lang, site.config.principalQuoteBn, site.config.principalQuoteEn) ||
+      (lang === "bn" ? PRINCIPAL_SLOGAN.bn : PRINCIPAL_SLOGAN.en)
+    : undefined;
 
-  const leaders = isDirectBani
+  const leaders = isFramedBani
     ? listed.map((person) => ({
         ...person,
         slogan,
         noLink: true,
       }))
     : [];
-  const people = isDirectBani ? [] : listed;
+  const people = isFramedBani ? [] : listed;
 
   return (
     <PeopleDirectory
       title={pick(lang, child?.labelBn, child?.labelEn) || (lang === "bn" ? label.bn : label.en)}
       summary={
-        isDirectBani
+        isFramedBani
           ? (lang === "bn" ? `${label.bn}-এর বাণী, মূল স্লোগান ও ডেস্কে সাক্ষাতের তথ্য।` : `Message, slogan, and visit details for the ${label.en}.`)
           : (lang === "bn" ? "এই ডেস্কে কী হয়, কখন আসবেন, এবং কে দায়িত্বে।" : "What this desk does, when to visit, and who is in charge.")
       }

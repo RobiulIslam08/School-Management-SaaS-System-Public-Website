@@ -153,6 +153,50 @@ export function ProfileFrame({
   );
 }
 
+/** Plain staff profile (no framed বাণী) for office desks like vice, exam, clerk. */
+export function SimplePersonProfile({
+  name,
+  designation,
+  photoUrl,
+  message,
+  phone,
+}: {
+  name: string;
+  designation?: string;
+  photoUrl?: string;
+  message?: string;
+  phone?: string;
+}) {
+  return (
+    <article className="simple-person mx-auto my-10 max-w-3xl px-4">
+      <div className="simple-person-card">
+        <div className="simple-person-photo">
+          {photoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={resolvePhoto(photoUrl)} alt={name} loading="eager" decoding="async" />
+          ) : (
+            <div className="simple-person-fallback" aria-hidden>
+              {name.slice(0, 1)}
+            </div>
+          )}
+        </div>
+        <div className="simple-person-body">
+          <h1 className="display text-2xl font-semibold text-brand md:text-3xl">{name}</h1>
+          {designation ? <p className="mt-1 text-sm font-semibold text-accent">{designation}</p> : null}
+          {phone ? (
+            <p className="mt-3 text-sm font-medium">
+              <a href={`tel:${phone.replace(/\s/g, "")}`} className="text-brand hover:underline">
+                {phone}
+              </a>
+            </p>
+          ) : null}
+          {message ? <p className="mt-4 text-sm leading-relaxed text-muted whitespace-pre-wrap">{message}</p> : null}
+        </div>
+      </div>
+    </article>
+  );
+}
+
 function Portrait({ person }: { person: PersonItem }) {
   return (
     <div className="portrait">
