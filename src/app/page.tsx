@@ -2,6 +2,9 @@ import Link from "next/link";
 import { Crest, Shell } from "@/components/shell";
 import { HeroStage } from "@/components/hero-media";
 import { SitePhoto } from "@/components/site-photo";
+import { RoyalFrame } from "@/components/royal-frame";
+import { FramedBaniBoard } from "@/components/framed-bani-board";
+import { committeeSeat } from "@/components/people-board";
 import { getSite } from "@/lib/api";
 import { getLang } from "@/lib/locale";
 import { NoticeStamp, noticeLabel } from "@/components/notice-stamp";
@@ -78,6 +81,10 @@ export default async function HomePage() {
   const bn = lang === "bn";
   const principalPerson = people.find((person) => person.board === "principal");
   const principalPhoto = config.principalPhotoUrl || principalPerson?.photoUrl || "/media/portrait-0.webp";
+  const presidentPerson =
+    people.find((p) => (p.board === "governing" || p.board === "committee") && committeeSeat(p.designation) === "president") ||
+    people.find((p) => p.board === "governing" || p.board === "committee");
+  const presidentPhoto = presidentPerson?.photoUrl || "/media/portrait-0.webp";
   const facts = [
     school.eiin ? { label: "EIIN", value: school.eiin } : null,
     school.address ? { label: bn ? "ঠিকানা" : "Address", value: school.address } : null,
@@ -292,54 +299,41 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {(config.principalQuoteBn || config.principalQuoteEn || people.some((person) => person.board === "vice")) ? (
-        <section className="band-brand">
-          <div className="home-wrap home-block grid gap-10">
-            {(config.principalQuoteBn || config.principalQuoteEn) ? (
-              <div className="principal-layout">
-                <figure className="principal-frame">
-                  <SitePhoto
-                    src={principalPhoto}
-                    alt={config.principalName || (bn ? "প্রধান শিক্ষক" : "Principal")}
-                    label={config.principalName || (bn ? "প্রধান শিক্ষক" : "Principal")}
-                    className="principal-photo"
-                  />
-                  <figcaption className="principal-plate">
-                    <strong>{config.principalName || (bn ? "প্রধান শিক্ষক" : "Principal")}</strong>
-                    {config.principalDesignation ? <span>{config.principalDesignation}</span> : null}
-                  </figcaption>
-                </figure>
-                <blockquote>
-                  <p className="section-kicker">{bn ? "প্রধান শিক্ষকের বাণী" : "From the principal"}</p>
-                  <p className="display mt-3 text-xl leading-snug md:text-3xl">“{pick(lang, config.principalQuoteBn, config.principalQuoteEn)}”</p>
-                  <Link href={principalPerson ? `/office/principal/${principalPerson._id}` : "/office/principal"} className="mt-4 inline-block text-sm underline underline-offset-4">{bn ? "পূর্ণ বাণী" : "Full message"}</Link>
-                </blockquote>
-              </div>
-            ) : null}
-            {people.filter((person) => person.board === "vice").slice(0, 1).map((person) => (
-              <div key={person._id} className="principal-layout">
-                <figure className="principal-frame">
-                  <SitePhoto
-                    src={person.photoUrl || "/media/portrait-1.webp"}
-                    alt={person.name}
-                    label={person.name}
-                    className="principal-photo"
-                  />
-                  <figcaption className="principal-plate">
-                    <strong>{person.name}</strong>
-                    {person.designation ? <span>{person.designation}</span> : null}
-                  </figcaption>
-                </figure>
-                <blockquote>
-                  <p className="section-kicker">{bn ? "সহকারি অধ্যক্ষের বাণী" : "From the assistant principal"}</p>
-                  <p className="mt-3 text-lg leading-snug">{excerpt(pick(lang, person.bioBn, person.bioEn), 180)}</p>
-                  <Link href={`/office/vice/${person._id}`} className="mt-4 inline-block text-sm underline underline-offset-4">{bn ? "পূর্ণ বাণী" : "Full message"}</Link>
-                </blockquote>
-              </div>
-            ))}
+      <section className="band-brand py-12 md:py-16">
+        <div className="home-wrap home-block">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <p className="section-kicker text-amber-200">
+              {bn ? "প্রতিষ্ঠান প্রধান ও পরিচালনা পর্ষদ" : "Institutional Leadership"}
+            </p>
+            <h2 className="display text-2xl md:text-4xl font-bold mt-2 text-white">
+              {bn ? "বাণী ও অনুপ্রেরণা" : "Messages from Leadership"}
+            </h2>
           </div>
-        </section>
-      ) : null}
+          <div className="grid gap-8 lg:gap-10 lg:grid-cols-2 items-start max-w-[90rem] mx-auto px-2 sm:px-4">
+            {/* Principal Wall-Framed Quote Board */}
+            <FramedBaniBoard
+              wide
+              kicker={bn ? "অধ্যক্ষ মহোদয়ের বাণী" : "From the Principal"}
+              name={config.principalName || principalPerson?.name || (bn ? "অধ্যক্ষ মহোদয়" : "Principal")}
+              designation={config.principalDesignation || principalPerson?.designation || (bn ? "অধ্যক্ষ ও প্রতিষ্ঠান প্রধান" : "Principal")}
+              photoUrl={principalPhoto}
+              quote={pick(lang, config.principalQuoteBn, config.principalQuoteEn) || pick(lang, principalPerson?.bioBn, principalPerson?.bioEn) || (bn ? "সুশিক্ষা ও মানবিক মূল্যবোধের সমন্বয়ে আমরা প্রতিটি শিক্ষার্থীকে আলোকিত ভবিষ্যৎ নাগরিক হিসেবে গড়ে তুলতে অঙ্গীকারাবদ্ধ।" : "Dedicated to holistic education and moral leadership.")}
+              institutionName={school.name}
+            />
+
+            {/* President Wall-Framed Quote Board */}
+            <FramedBaniBoard
+              wide
+              kicker={bn ? "সভাপতি মহোদয়ের বাণী" : "From the President"}
+              name={config.presidentName || presidentPerson?.name || (bn ? "সভাপতি মহোদয়" : "President")}
+              designation={config.presidentDesignation || presidentPerson?.designation || (bn ? "সভাপতি, পরিচালনা পর্ষদ" : "President, Governing Body")}
+              photoUrl={config.presidentPhotoUrl || presidentPhoto}
+              quote={pick(lang, config.presidentQuoteBn, config.presidentQuoteEn) || pick(lang, presidentPerson?.bioBn, presidentPerson?.bioEn) || (bn ? "একটি সুশৃঙ্খল, আধুনিক ও যুগোপযোগী শিক্ষাঙ্গন গড়ে তোলাই আমাদের পরিচালনা পর্ষদের অন্যতম মূল লক্ষ্য।" : "Building a modern, disciplined, and visionary educational environment.")}
+              institutionName={school.name}
+            />
+          </div>
+        </div>
+      </section>
 
       {config.whyChooseUs.length ? (
         <section className="home-wrap home-block grid items-center gap-10 lg:grid-cols-2">
@@ -462,6 +456,11 @@ export default async function HomePage() {
                 <p>{bn ? "জমার ইতিহাস শিক্ষার্থী আইডি দিয়ে। রসিদ এই পাতা থেকে।" : "Payment history with a student ID. The receipt prints from this page."}</p>
               </Link>
             ) : null}
+            <Link href="/about/honorable" className="path-card">
+              <span>{config.receiptLookupEnabled ? "10" : "09"}</span>
+              <h3>{bn ? "সাবেক নেতৃত্ব ও দাতা সদস্য" : "Former Leaders & Donors"}</h3>
+              <p>{bn ? "প্রতিষ্ঠানের সাবেক অধ্যক্ষ, সভাপতি ও শ্রদ্ধেয় দাতা সদস্যদের সম্মাননা তালিকা।" : "Honoring our former principals, presidents, and distinguished donors."}</p>
+            </Link>
           </div>
           {downloads.length ? (
             <ul className="download-row">

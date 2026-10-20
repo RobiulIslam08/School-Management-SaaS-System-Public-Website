@@ -5,10 +5,10 @@ import type { NoticeItem, PageDetail, PostItem, PublicSite } from "./types";
 
 async function read<T>(path: string): Promise<T | null> {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 2000);
+  const timer = setTimeout(() => controller.abort(), 12000);
   try {
     const response = await fetch(`${apiOrigin()}/api/v1${path}`, {
-      next: { revalidate: 60 },
+      next: { revalidate: 60, tags: ["public-site"] },
       signal: controller.signal,
     });
     clearTimeout(timer);

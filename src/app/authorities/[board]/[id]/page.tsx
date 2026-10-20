@@ -6,7 +6,7 @@ import { getSite } from "@/lib/api";
 import { getLang } from "@/lib/locale";
 import { pick } from "@/lib/text";
 
-const BOARDS = new Set(["committee", "governing", "council", "syndicate", "pta"]);
+const BOARDS = new Set(["committee", "governing", "council", "pta"]);
 
 export default async function Page({ params }: { params: Promise<{ board: string; id: string }> }) {
   const { board, id } = await params;

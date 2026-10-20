@@ -35,16 +35,6 @@ const BOARDS: Record<string, { bn: string; en: string; noteBn: string; noteEn: s
     visitBn: ["সভার আগে নোটিশ", "সিলেবাস এই সাইটে", "ফল প্রকাশের পর"],
     visitEn: ["A notice before the meeting", "The syllabus is on this site", "After the result is published"],
   },
-  syndicate: {
-    bn: "সিন্ডিকেট",
-    en: "Syndicate",
-    noteBn: "সিন্ডিকেট একাডেমিক নীতি ও বাজেট আলোচনা করে। ফির অঙ্ক অফিস ঘোষণা করে। এই পাতায় কোনো সংখ্যা নেই।",
-    noteEn: "The syndicate discusses academic policy and the budget. The office announces fee amounts. This page has no figures.",
-    dutiesBn: ["একাডেমিক নীতি", "বাজেট আলোচনা", "ফির অঙ্ক অফিস ঘোষণা করে"],
-    dutiesEn: ["Academic policy", "Budget discussion", "The office announces fee amounts"],
-    visitBn: ["সভার তারিখ নোটিশে", "ফির অঙ্ক অফিসে", "নীতি নোটিশে"],
-    visitEn: ["The meeting date is a notice", "Fee amounts are at the office", "Policy is a notice"],
-  },
   pta: {
     bn: "অভিভাবক কমিটি",
     en: "Parent committee",
@@ -71,7 +61,8 @@ export default async function Page({ params }: { params: Promise<{ board: string
     visit: lang === "bn" ? label.visitBn : label.visitEn,
   });
   const listed = filterPeople(site, [board]);
-  const committee = board === "committee" ? splitCommittee(listed) : { leaders: [], rest: listed };
+  const isTableBoard = board === "governing" || board === "committee";
+  const committee = isTableBoard ? splitCommittee(listed) : { leaders: [], rest: listed };
   return (
     <PeopleDirectory
       title={pick(lang, child?.labelBn, child?.labelEn) || (lang === "bn" ? label.bn : label.en)}
@@ -81,6 +72,7 @@ export default async function Page({ params }: { params: Promise<{ board: string
       visit={copy.visit}
       leaders={committee.leaders}
       people={committee.rest}
+      useTable={isTableBoard}
     />
   );
 }

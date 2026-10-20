@@ -13,7 +13,9 @@ interface AlbumPayload {
 async function album(id: string): Promise<AlbumPayload | null> {
   const origin = (process.env.API_PROXY_URL ?? "http://localhost:4000").replace(/\/$/, "");
   try {
-    const response = await fetch(`${origin}/api/v1/public/website/albums/${id}`, { next: { revalidate: 60 } });
+    const response = await fetch(`${origin}/api/v1/public/website/albums/${id}`, {
+      next: { revalidate: 60, tags: ["public-site"] },
+    });
     if (!response.ok) return null;
     const json = (await response.json()) as { data?: AlbumPayload };
     return json.data ?? null;

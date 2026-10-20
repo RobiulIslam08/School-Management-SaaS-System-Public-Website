@@ -20,13 +20,18 @@ export function Shell({ site, lang, children }: { site: PublicSite; lang: Lang; 
         <div className="utility-bar">
           <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4">
             <div className="flex min-w-0 items-center gap-3">
-              {school.eiin ? <span className="seal-chip">EIIN {school.eiin}</span> : <span className="truncate">{school.name}</span>}
-              {school.academicYear ? <span className="hidden sm:inline">{school.academicYear}</span> : null}
+              {school.eiin ? <span className="seal-chip">EIIN {school.eiin}</span> : null}
+              {school.academicYear ? <span className="hidden sm:inline text-xs opacity-90">{school.academicYear}</span> : null}
               {config.phone ? (
-                <a className="hidden truncate md:inline" href={`tel:${config.phone.replace(/\s/g, "")}`}>
+                <a className="hidden truncate md:inline text-xs opacity-90 hover:opacity-100" href={`tel:${config.phone.replace(/\s/g, "")}`}>
                   {config.phone}
                 </a>
               ) : null}
+            </div>
+            <div className="utility-center-brand flex flex-1 items-center justify-center px-2 text-center min-w-0">
+              <span className="truncate font-extrabold text-xs sm:text-sm md:text-base text-amber-200 tracking-wide drop-shadow-sm">
+                🏛️ {school.name}
+              </span>
             </div>
             <div className="utility-actions">
               <Link href={`/locale?lang=${lang === "bn" ? "en" : "bn"}`}>{lang === "bn" ? "English" : "বাংলা"}</Link>
@@ -91,6 +96,7 @@ export function Shell({ site, lang, children }: { site: PublicSite; lang: Lang; 
                 <li><Link href="/student-portal/dashboard">{lang === "bn" ? "স্টুডেন্ট পোর্টাল (লেকচার শিট)" : "Student Portal"}</Link></li>
                 <li><Link href="/board" target="_blank">{lang === "bn" ? "লাইভ ডিসপ্লে বোর্ড" : "Live Display Board"}</Link></li>
                 {config.receiptLookupEnabled ? <li><Link href="/receipts">{lang === "bn" ? "রসিদ" : "Receipts"}</Link></li> : null}
+                <li><Link href="/about/honorable">{lang === "bn" ? "সাবেক অধ্যক্ষ, সভাপতি ও দাতা" : "Former Leaders & Donors"}</Link></li>
                 <li><Link href="/notices">{lang === "bn" ? "নোটিশ" : "Notices"}</Link></li>
                 <li><Link href="/contact">{lang === "bn" ? "যোগাযোগ" : "Contact"}</Link></li>
               </ul>

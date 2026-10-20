@@ -5,6 +5,8 @@ import type { Lang, PersonItem, PublicSite } from "@/lib/types";
 import { getLang } from "@/lib/locale";
 import { resolvePhoto } from "@/lib/media";
 import { pick } from "@/lib/text";
+import { RoyalFrame } from "@/components/royal-frame";
+import { FramedBaniBoard } from "@/components/framed-bani-board";
 
 const OFFICE_BOARDS = new Set(["principal", "vice", "admission", "accounts", "librarian", "exam", "clerk"]);
 
@@ -22,6 +24,7 @@ export async function PeopleDirectory({
   links,
   people,
   leaders = [],
+  useTable = false,
 }: {
   title: string;
   summary?: string;
@@ -31,6 +34,7 @@ export async function PeopleDirectory({
   links?: Array<{ href: string; label: string }>;
   people: PersonItem[];
   leaders?: Array<PersonItem & { slogan?: string; noLink?: boolean }>;
+  useTable?: boolean;
 }) {
   const [site, lang] = await Promise.all([getSite(), getLang()]);
   if (!site) return <p className="p-8">The school site could not be loaded.</p>;
@@ -96,7 +100,20 @@ export async function PeopleDirectory({
           slogan={person.slogan}
         />
       ))}
-      {people.length ? <PeopleGrid people={people} /> : leaders.length ? null : (
+      {people.length ? (
+        useTable ? (
+          <MembersTable
+            people={people}
+            lang={lang}
+            hidePhone={people.some((person) => person.board === "committee")}
+          />
+        ) : (
+          <PeopleGrid
+            people={people}
+            hidePhone={people.some((person) => person.board === "committee")}
+          />
+        )
+      ) : leaders.length ? null : (
         <p className="mx-auto max-w-7xl px-4 py-12 text-sm text-muted">{lang === "bn" ? "এই তালিকায় এখনো কেউ যোগ হয়নি।" : "No one is published on this list yet."}</p>
       )}
       {duties?.length || visit?.length ? <div className="article">{detail}</div> : null}
@@ -121,39 +138,20 @@ export function ProfileFrame({
   href?: string;
   slogan?: string;
 }) {
-  const frame = (
-    <>
-      <div className="leader-sheet">
-        <div className="portrait">
-          {photoUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={resolvePhoto(photoUrl)} alt={name} loading="lazy" decoding="async" />
-          ) : (
-            <div className="grid aspect-[3/4] place-items-center text-4xl text-brand">{name.slice(0, 1)}</div>
-          )}
-        </div>
-        <div>
-          <h2 className="text-2xl font-semibold text-brand">{name}</h2>
-          {designation ? <p className="mt-1 text-sm text-muted">{designation}</p> : null}
-          {phone ? <p className="mt-2 text-sm font-medium text-brand">{phone}</p> : null}
-          {slogan ? (
-            <blockquote className="my-3.5 border-l-4 border-accent bg-paper/60 p-3.5 rounded-r-xl italic text-brand shadow-sm">
-              <p className="text-base font-semibold leading-relaxed md:text-lg">“{slogan}”</p>
-            </blockquote>
-          ) : null}
-          {message ? <p className="leader-message">{message}</p> : null}
-        </div>
-      </div>
-    </>
+  const displayQuote = message || slogan || "";
+
+  return (
+    <div className="mx-auto max-w-4xl lg:max-w-5xl my-10 px-2 sm:px-4">
+      <FramedBaniBoard
+        wide
+        kicker={designation ? `${designation} মহোদয়ের বাণী` : "বাণী ও দিকনির্দেশনা"}
+        name={name}
+        designation={phone ? `${designation ? `${designation} · ` : ""}📞 ${phone}` : designation}
+        photoUrl={photoUrl}
+        quote={displayQuote}
+      />
+    </div>
   );
-  if (href) {
-    return (
-      <Link href={href} className="leader-list block text-inherit no-underline">
-        {frame}
-      </Link>
-    );
-  }
-  return <article className="leader-list">{frame}</article>;
 }
 
 function Portrait({ person }: { person: PersonItem }) {
@@ -169,24 +167,102 @@ function Portrait({ person }: { person: PersonItem }) {
   );
 }
 
-function PeopleGrid({ people }: { people: PersonItem[] }) {
-  const single = people.length === 1;
+export function PeopleGrid({
+  people,
+  hidePhone = false,
+}: {
+  people: PersonItem[];
+  hidePhone?: boolean;
+}) {
   return (
-    <ul className={single ? "card-center mx-auto max-w-7xl px-4 py-6" : "mx-auto grid max-w-7xl gap-6 px-4 py-6 sm:grid-cols-2 lg:grid-cols-4"}>
+    <div className="people-grid">
       {people.map((person) => (
-        <li key={person._id}>
-          <Link href={personHref(person)} className="staff-card block">
-            <Portrait person={person} />
-            <div className="staff-rule" />
-            <div className="space-y-1 px-4 py-4">
-              <h3 className="font-semibold">{person.name}</h3>
-              <p className="text-sm text-muted">{person.designation}</p>
-              {person.board !== "committee" && person.phone ? <p className="text-sm font-medium text-brand">{person.phone}</p> : null}
-            </div>
-          </Link>
-        </li>
+        <Link key={person._id} href={personHref(person)} className="person-card block no-underline text-inherit">
+          <Portrait person={person} />
+          <div className="person-body">
+            <h3>{person.name}</h3>
+            {person.designation ? <p className="person-role">{person.designation}</p> : null}
+            {!hidePhone && person.phone ? <p className="person-phone">{person.phone}</p> : null}
+          </div>
+        </Link>
       ))}
-    </ul>
+    </div>
+  );
+}
+
+export function MembersTable({
+  people,
+  lang,
+  hidePhone = false,
+}: {
+  people: PersonItem[];
+  lang: Lang;
+  hidePhone?: boolean;
+}) {
+  const bn = lang === "bn";
+  return (
+    <div className="data-table-wrap">
+      <h3 className="text-xl font-bold text-brand mb-4 px-1">{bn ? "সদস্যবৃন্দ" : "Members"}</h3>
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th className="w-24 text-center">{bn ? "ছবি" : "Photo"}</th>
+            <th>{bn ? "নাম" : "Name"}</th>
+            <th>{bn ? "পদবী" : "Designation"}</th>
+            {hidePhone ? null : <th>{bn ? "ফোন / যোগাযোগ" : "Contact"}</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {people.map((person) => (
+            <tr key={person._id}>
+              <td className="p-3 text-center">
+                {person.photoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={resolvePhoto(person.photoUrl)}
+                    alt={person.name}
+                    className="passport-photo mx-auto"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <div className="passport-photo-fallback mx-auto">
+                    {person.name.slice(0, 1)}
+                  </div>
+                )}
+              </td>
+              <td>
+                <Link href={personHref(person)} className="font-bold text-base text-brand hover:underline block">
+                  {person.name}
+                </Link>
+                {(person.bioBn || person.bioEn) ? (
+                  <p className="text-xs text-muted mt-1 max-w-md line-clamp-2">
+                    {pick(lang, person.bioBn, person.bioEn)}
+                  </p>
+                ) : null}
+              </td>
+              <td>
+                <span className="inline-block px-2.5 py-1 rounded-md text-xs font-semibold bg-brand/10 text-brand border border-brand/20">
+                  {person.designation || (bn ? "সদস্য" : "Member")}
+                </span>
+              </td>
+              {hidePhone ? null : (
+                <td className="text-sm font-medium">
+                  {person.phone ? (
+                    <a href={`tel:${person.phone}`} className="text-brand hover:underline inline-flex items-center gap-1">
+                      <span>📞</span>
+                      <span>{person.phone}</span>
+                    </a>
+                  ) : (
+                    <span className="text-muted text-xs">—</span>
+                  )}
+                </td>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
@@ -207,15 +283,13 @@ export function committeeSeat(designation?: string): "president" | "vice" | null
 
 export function splitCommittee(people: PersonItem[]): { leaders: PersonItem[]; rest: PersonItem[] } {
   const presidents: PersonItem[] = [];
-  const vices: PersonItem[] = [];
   const rest: PersonItem[] = [];
   for (const person of people) {
     const seat = committeeSeat(person.designation);
     if (seat === "president") presidents.push(person);
-    else if (seat === "vice") vices.push(person);
     else rest.push(person);
   }
-  return { leaders: [...presidents, ...vices], rest };
+  return { leaders: presidents, rest };
 }
 
 function lines(primary: string[] | undefined, secondary: string[] | undefined, fallback: string[]): string[] {

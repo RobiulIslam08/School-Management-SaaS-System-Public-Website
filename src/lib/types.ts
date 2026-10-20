@@ -97,6 +97,8 @@ export interface TeacherItem {
   phone?: string;
   bioBn?: string;
   bioEn?: string;
+  joiningDate?: string;
+  retirementDate?: string;
 }
 
 export interface PersonItem {
@@ -108,6 +110,17 @@ export interface PersonItem {
   bioBn?: string;
   bioEn?: string;
   phone?: string;
+}
+
+export interface DonorItem {
+  _id: string;
+  donorName: string;
+  donorAddress?: string;
+  donorPhone?: string;
+  amount: number;
+  purpose?: string;
+  academicYear?: string;
+  date?: string;
 }
 
 export interface PageSummary {
@@ -207,6 +220,11 @@ export interface PublicSite {
     principalPhotoUrl: string;
     principalQuoteBn: string;
     principalQuoteEn: string;
+    presidentName?: string;
+    presidentDesignation?: string;
+    presidentPhotoUrl?: string;
+    presidentQuoteBn?: string;
+    presidentQuoteEn?: string;
     homeIntroBn: string;
     homeIntroEn: string;
     tasks: TaskCopy[];
@@ -232,4 +250,5 @@ export interface PublicSite {
   albums: AlbumItem[];
   videos: VideoItem[];
   files: FileItem[];
+  donors?: DonorItem[];
 }

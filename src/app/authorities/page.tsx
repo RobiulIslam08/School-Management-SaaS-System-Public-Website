@@ -6,8 +6,8 @@ const LINKS = [
   { href: "/authorities/committee", bn: "স্কুল কমিটি", en: "School committee" },
   { href: "/authorities/governing", bn: "পরিচালনা পর্ষদ", en: "Governing body" },
   { href: "/authorities/council", bn: "একাডেমিক কাউন্সিল", en: "Academic council" },
-  { href: "/authorities/syndicate", bn: "সিন্ডিকেট", en: "Syndicate" },
   { href: "/authorities/pta", bn: "অভিভাবক কমিটি", en: "Parent committee" },
+  { href: "/about/honorable", bn: "সাবেক অধ্যক্ষ, সভাপতি ও দাতা", en: "Former Leaders & Donors" },
 ];
 
 export default async function Page() {
@@ -16,9 +16,9 @@ export default async function Page() {
   return (
     <PeopleDirectory
       title={lang === "bn" ? "কর্তৃপক্ষ" : "Authorities"}
-      summary={lang === "bn" ? "স্কুল কমিটি, পর্ষদ, কাউন্সিল, সিন্ডিকেট ও অভিভাবক কমিটি।" : "The school committee, governing body, council, syndicate, and parent committee."}
+      summary={lang === "bn" ? "স্কুল কমিটি, পরিচালনা পর্ষদ, কাউন্সিল ও অভিভাবক কমিটি।" : "The school committee, governing body, council, and parent committee."}
       links={LINKS.map((item) => ({ href: item.href, label: lang === "bn" ? item.bn : item.en }))}
-      people={filterPeople(site, ["committee", "governing", "council", "syndicate", "pta"])}
+      people={filterPeople(site, ["committee", "governing", "council", "pta"])}
     />
   );
 }

@@ -1,12 +1,12 @@
 import { PageIntro, Shell } from "@/components/shell";
 import { NoticeBoard } from "@/components/notice-board";
-import { getNotices, getSite } from "@/lib/api";
+import { getSite } from "@/lib/api";
 import { getLang } from "@/lib/locale";
 
 export default async function Page() {
-  const [site, lang, notices] = await Promise.all([getSite(), getLang(), getNotices()]);
+  const [site, lang] = await Promise.all([getSite(), getLang()]);
   if (!site) return <p className="p-8">The school site could not be loaded.</p>;
-  const items = notices ?? site.notices;
+  const items = site.notices;
   return (
     <Shell site={site} lang={lang}>
       <PageIntro

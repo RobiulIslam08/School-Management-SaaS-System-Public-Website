@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Fraunces, Noto_Sans_Bengali } from "next/font/google";
 import { Suspense } from "react";
+import { HtmlLang } from "@/components/html-lang";
 import { RouteProgress } from "@/components/route-progress";
 import { getSite, safeColor } from "@/lib/api";
-import { getLang } from "@/lib/locale";
 import { pick } from "@/lib/text";
 import "./globals.css";
 
@@ -35,16 +35,15 @@ const display = Fraunces({
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSite();
-  const lang = await getLang();
   const name = site?.school.name ?? "School";
-  const description = pick(lang, site?.config.seoDescriptionBn, site?.config.seoDescriptionEn) || name;
+  const description = pick("bn", site?.config.seoDescriptionBn, site?.config.seoDescriptionEn) || name;
   return {
     title: { default: name, template: `%s · ${name}` },
     description,
     other: {
       "color-scheme": "light",
     },
-    openGraph: { title: name, description, locale: lang === "bn" ? "bn_BD" : "en_US" },
+    openGraph: { title: name, description, locale: "bn_BD" },
   };
 }
 
@@ -60,15 +59,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const accentRgb = hexToRgb(accent);
   const paperRgb = hexToRgb(paper);
   const inkRgb = hexToRgb(ink);
-  const lang = await getLang();
 
   return (
-    <html lang={lang} translate="no" className={`notranslate ${noto.variable} ${display.variable}`} style={{ colorScheme: "light" }}>
+    <html lang="bn" translate="no" className={`notranslate ${noto.variable} ${display.variable}`} style={{ colorScheme: "light" }}>
       <head>
         <meta name="color-scheme" content="light" />
         <link rel="preload" as="image" href="/media/campus.webp" fetchPriority="high" />
       </head>
       <body className="min-h-screen antialiased">
+        <HtmlLang />
         <style>{`:root{color-scheme:light;--brand:${brand};--brand-rgb:${brandRgb};--on-brand:${onBrand};--paper:${paper};--paper-rgb:${paperRgb};--ink:${ink};--ink-rgb:${inkRgb};--accent:${accent};--accent-rgb:${accentRgb};--card:#fffdf8;--card-rgb:255, 253, 248;}`}</style>
         <Suspense fallback={null}>
           <RouteProgress />
