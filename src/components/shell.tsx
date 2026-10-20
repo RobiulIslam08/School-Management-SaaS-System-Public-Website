@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { LangSwitcher } from "@/components/lang-switcher";
 import { MobileTasks } from "@/components/mobile-tasks";
 import { SiteNav } from "@/components/site-nav";
 import type { Lang, PublicSite } from "@/lib/types";
@@ -34,7 +35,7 @@ export function Shell({ site, lang, children }: { site: PublicSite; lang: Lang; 
               </span>
             </div>
             <div className="utility-actions">
-              <Link href={`/locale?lang=${lang === "bn" ? "en" : "bn"}`}>{lang === "bn" ? "English" : "বাংলা"}</Link>
+              <LangSwitcher lang={lang} />
               <span className="utility-rule" aria-hidden="true" />
               <Link href="/student-portal/dashboard" className="font-bold text-amber-300 hover:text-white">
                 🎓 {lang === "bn" ? "স্টুডেন্ট পোর্টাল" : "Student Portal"}

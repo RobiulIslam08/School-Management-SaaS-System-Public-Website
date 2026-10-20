@@ -50,6 +50,8 @@ export function RouteProgress() {
       try {
         const url = new URL(target.href, window.location.href);
         const currentUrl = new URL(window.location.href);
+        // Locale cookie route is a redirect hop — never show the global loader for it.
+        if (url.pathname === "/locale") return;
         if (url.origin === currentUrl.origin && (url.pathname !== currentUrl.pathname || url.search !== currentUrl.search)) {
           startTransition(() => {
             setActive(true);

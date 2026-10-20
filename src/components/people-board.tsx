@@ -5,7 +5,6 @@ import type { Lang, PersonItem, PublicSite } from "@/lib/types";
 import { getLang } from "@/lib/locale";
 import { resolvePhoto } from "@/lib/media";
 import { pick } from "@/lib/text";
-import { RoyalFrame } from "@/components/royal-frame";
 import { FramedBaniBoard } from "@/components/framed-bani-board";
 
 const OFFICE_BOARDS = new Set(["principal", "vice", "admission", "accounts", "librarian", "exam", "clerk"]);
@@ -177,8 +176,9 @@ export function PeopleGrid({
   return (
     <div className="people-grid">
       {people.map((person) => (
-        <Link key={person._id} href={personHref(person)} className="person-card block no-underline text-inherit">
+        <Link key={person._id} href={personHref(person)} className="person-card">
           <Portrait person={person} />
+          <div className="staff-rule" aria-hidden />
           <div className="person-body">
             <h3>{person.name}</h3>
             {person.designation ? <p className="person-role">{person.designation}</p> : null}
