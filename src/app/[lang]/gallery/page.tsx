@@ -2,7 +2,7 @@ import Link from "next/link";
 import { PageIntro, Shell } from "@/components/shell";
 import { getSite } from "@/lib/api";
 import { getLang, type LangProps } from "@/lib/locale";
-import { resolvePhoto } from "@/lib/media";
+import { photoProps } from "@/lib/media";
 import { pick } from "@/lib/text";
 
 const KIND: Record<string, { bn: string; en: string }> = {
@@ -33,7 +33,7 @@ export default async function Page({ params }: LangProps) {
           <Link key={album._id} className="feature-card block" href={`/gallery/${album._id}`}>
             {album.coverUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={resolvePhoto(album.coverUrl)} alt={pick(lang, album.titleBn, album.titleEn)} className="aspect-[4/3]" loading="lazy" decoding="async" />
+              <img {...photoProps(album.coverUrl, "(min-width: 768px) 33vw, 100vw")} alt={pick(lang, album.titleBn, album.titleEn)} className="aspect-[4/3]" loading="lazy" decoding="async" />
             ) : null}
             <div className="p-4">
               <p className="text-xs uppercase tracking-[0.16em] text-accent">{(lang === "bn" ? KIND[album.kind ?? ""]?.bn : KIND[album.kind ?? ""]?.en) || album.kind}</p>

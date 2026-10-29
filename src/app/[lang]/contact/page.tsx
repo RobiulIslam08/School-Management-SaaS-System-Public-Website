@@ -1,4 +1,5 @@
 import { ContactForm } from "@/components/contact-form";
+import { MapEmbed } from "@/components/map-embed";
 import { PageIntro, Shell } from "@/components/shell";
 import { getSite } from "@/lib/api";
 import { getLang, type LangProps } from "@/lib/locale";
@@ -38,7 +39,14 @@ export default async function Page({ params }: LangProps) {
           <p className="text-sm text-muted">{site.school.address}</p>
           <ContactForm lang={lang} />
         </div>
-        {map ? <iframe title="Map" className="h-64 w-full rounded-2xl border border-line md:h-80" src={map} loading="lazy" /> : null}
+        {map ? (
+          <MapEmbed
+            src={map}
+            title={lang === "bn" ? "ক্যাম্পাসের মানচিত্র" : "Campus map"}
+            label={lang === "bn" ? "মানচিত্র দেখুন" : "Show map"}
+            className="h-64 w-full rounded-2xl border border-line md:h-80"
+          />
+        ) : null}
       </div>
     </Shell>
   );

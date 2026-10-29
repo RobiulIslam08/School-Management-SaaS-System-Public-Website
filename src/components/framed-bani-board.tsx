@@ -1,5 +1,5 @@
 import React from "react";
-import { resolvePhoto } from "@/lib/media";
+import { photoProps, resolvePhoto } from "@/lib/media";
 
 export interface FramedBaniBoardProps {
   kicker?: string;
@@ -100,7 +100,7 @@ export function FramedBaniBoard({
                   {resolvedPhoto ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={resolvedPhoto}
+                      {...photoProps(resolvedPhoto, "240px")}
                       alt={name}
                       loading="lazy"
                       decoding="async"

@@ -5,6 +5,8 @@ const nextConfig: NextConfig = {
   // Repo already has agent instructions. Do not generate a second AGENTS.md.
   agentRules: false,
   experimental: {
+    // Saves the render-blocking stylesheet round trip on first load (mobile LCP).
+    inlineCss: true,
     staleTimes: {
       dynamic: 60,
       static: 300,

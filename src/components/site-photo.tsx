@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { resolvePhoto } from "@/lib/media";
+import { mediaSrcSet, resolvePhoto } from "@/lib/media";
 
 export function SitePhoto({
   src,
@@ -10,6 +10,7 @@ export function SitePhoto({
   className,
   quiet,
   priority = false,
+  sizes = "(min-width: 1024px) 50vw, 100vw",
 }: {
   src?: string;
   alt: string;
@@ -17,6 +18,8 @@ export function SitePhoto({
   className?: string;
   quiet?: boolean;
   priority?: boolean;
+  /** Rendered width hint for `srcset`; pass a small value (e.g. "96px") for thumbnails. */
+  sizes?: string;
 }) {
   const [failed, setFailed] = useState(false);
   const resolved = resolvePhoto(src);
@@ -29,10 +32,13 @@ export function SitePhoto({
       </span>
     );
   }
+  const srcSet = mediaSrcSet(resolved);
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={resolved}
+      srcSet={srcSet || undefined}
+      sizes={srcSet ? sizes : undefined}
       alt={alt}
       className={className}
       loading={priority ? "eager" : "lazy"}

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Noto_Sans_Bengali } from "next/font/google";
+import { Fraunces } from "next/font/google";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { RouteProgress } from "@/components/route-progress";
@@ -18,17 +18,14 @@ export function generateStaticParams() {
   return LANGS.map((lang) => ({ lang }));
 }
 
-const noto = Noto_Sans_Bengali({
-  subsets: ["bengali"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-noto",
-  display: "swap",
-});
+/** Desktop-only preloads; phones render with the system Bangla font (see globals.css). */
+const DESKTOP_FONTS = ["/media/fonts/noto-sans-bengali-bn-v1.woff2", "/media/fonts/noto-sans-bengali-latin-v1.woff2"];
 
 const display = Fraunces({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
+  preload: false,
 });
 
 function langOf(value: string): Lang | null {
@@ -60,12 +57,14 @@ export default async function RootLayout({ children, params }: { children: React
     <html
       lang={lang}
       translate="no"
-      className={`notranslate ${noto.variable} ${display.variable}`}
+      className={`notranslate ${display.variable}`}
       style={{ colorScheme: "light", ...themeStyle(vars) } as React.CSSProperties}
     >
       <head>
         <meta name="color-scheme" content="light" />
-        <link rel="preload" as="image" href="/media/campus.webp" fetchPriority="high" />
+        {DESKTOP_FONTS.map((href) => (
+          <link key={href} rel="preload" href={href} as="font" type="font/woff2" crossOrigin="anonymous" media="(min-width: 768px)" />
+        ))}
       </head>
       <body className="min-h-screen antialiased">
         <style id="school-theme-vars">{themeCss(vars)}</style>

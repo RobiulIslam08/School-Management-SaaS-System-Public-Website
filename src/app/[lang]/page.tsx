@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Crest, Shell } from "@/components/shell";
 import { HeroStage } from "@/components/hero-media";
 import { SitePhoto } from "@/components/site-photo";
+import { MapEmbed } from "@/components/map-embed";
 import { RoyalFrame } from "@/components/royal-frame";
 import { FramedBaniBoard } from "@/components/framed-bani-board";
 import { committeeSeat } from "@/components/people-board";
@@ -216,7 +217,7 @@ export default async function HomePage({ params }: LangProps) {
           </div>
           <div className={restNews.length ? "news-layout" : "mt-6"}>
             <Link href={`/news/${lead._id}`} className="news-lead">
-              <SitePhoto src={lead.coverUrl} alt={lead.coverAlt || pick(lang, lead.titleBn, lead.titleEn)} label={pick(lang, lead.titleBn, lead.titleEn)} />
+              <SitePhoto src={lead.coverUrl} alt={lead.coverAlt || ""} label={pick(lang, lead.titleBn, lead.titleEn)} />
               <div className="news-copy">
                 {lead.eventDate ? <p className="section-kicker">{formatDay(lang, lead.eventDate)}</p> : <p className="section-kicker">{bn ? "শীর্ষ খবর" : "Lead"}</p>}
                 <h3 className="display mt-1 text-xl font-semibold md:text-2xl">{pick(lang, lead.titleBn, lead.titleEn)}</h3>
@@ -230,7 +231,7 @@ export default async function HomePage({ params }: LangProps) {
                   {restNews.map((item) => (
                     <li key={item._id}>
                       <Link href={`/news/${item._id}`} className="news-item">
-                        <SitePhoto src={item.coverUrl} alt={item.coverAlt || pick(lang, item.titleBn, item.titleEn)} label={pick(lang, item.titleBn, item.titleEn)} />
+                        <SitePhoto src={item.coverUrl} alt={item.coverAlt || ""} label={pick(lang, item.titleBn, item.titleEn)} sizes="96px" />
                         <span>
                           <p className="font-semibold">{pick(lang, item.titleBn, item.titleEn)}</p>
                           {item.eventDate ? <p className="text-xs text-muted">{formatDay(lang, item.eventDate)}</p> : null}
@@ -491,7 +492,7 @@ export default async function HomePage({ params }: LangProps) {
             {teachers.slice(0, 10).map((teacher) => (
               <article key={teacher._id}>
                 <div className="portrait">
-                  <SitePhoto src={teacher.photoUrl} alt={teacher.name} label={teacher.name} />
+                  <SitePhoto src={teacher.photoUrl} alt={teacher.name} label={teacher.name} sizes="240px" />
                 </div>
                 <p className="mt-3 font-semibold">{teacher.name}</p>
                 {teacher.designation ? <p className="text-xs text-muted">{teacher.designation}</p> : null}
@@ -516,7 +517,7 @@ export default async function HomePage({ params }: LangProps) {
               const title = pick(lang, album.titleBn, album.titleEn);
               return (
                 <Link key={album._id} href={`/gallery/${album._id}`} className="gallery-tile">
-                  <SitePhoto src={album.coverUrl} alt={title} label={title} />
+                  <SitePhoto src={album.coverUrl} alt="" label={title} sizes="(min-width: 768px) 33vw, 50vw" />
                   <span className="gallery-caption">{title}</span>
                 </Link>
               );
@@ -565,7 +566,7 @@ export default async function HomePage({ params }: LangProps) {
           <div className="desk-grid">
             {desks.map((person) => (
               <Link key={person._id} href={`/office/${person.board}`} className="desk-card">
-                <SitePhoto src={person.photoUrl} alt={person.name} label={person.name} />
+                <SitePhoto src={person.photoUrl} alt={person.name} label={person.name} sizes="240px" />
                 <span className="desk-copy">
                   <strong>{person.name}</strong>
                   {person.designation ? <em>{person.designation}</em> : null}
@@ -593,7 +594,7 @@ export default async function HomePage({ params }: LangProps) {
               {config.email ? <p><span>Email</span><a href={`mailto:${config.email}`}>{config.email}</a></p> : null}
               {school.establishedYear ? <p><span>{bn ? "প্রতিষ্ঠা" : "Established"}</span>{school.establishedYear}</p> : null}
             </div>
-            {map ? <iframe title={bn ? "ক্যাম্পাসের মানচিত্র" : "Campus map"} className="visit-map" src={map} loading="lazy" /> : null}
+            {map ? <MapEmbed src={map} title={bn ? "ক্যাম্পাসের মানচিত্র" : "Campus map"} label={bn ? "মানচিত্র দেখুন" : "Show map"} className="visit-map" /> : null}
           </div>
         </section>
       ) : null}

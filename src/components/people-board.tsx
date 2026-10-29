@@ -2,7 +2,7 @@ import Link from "next/link";
 import { PageIntro, Shell } from "@/components/shell";
 import { getSite } from "@/lib/api";
 import type { Lang, PersonItem, PublicSite } from "@/lib/types";
-import { resolvePhoto } from "@/lib/media";
+import { photoProps } from "@/lib/media";
 import { pick } from "@/lib/text";
 import { FramedBaniBoard } from "@/components/framed-bani-board";
 
@@ -174,7 +174,7 @@ export function SimplePersonProfile({
         <div className="simple-person-photo">
           {photoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={resolvePhoto(photoUrl)} alt={name} loading="eager" decoding="async" />
+            <img {...photoProps(photoUrl, "320px")} alt={name} loading="eager" decoding="async" />
           ) : (
             <div className="simple-person-fallback" aria-hidden>
               {name.slice(0, 1)}
@@ -203,7 +203,7 @@ function Portrait({ person }: { person: PersonItem }) {
     <div className="portrait">
       {person.photoUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={resolvePhoto(person.photoUrl)} alt={person.name} loading="lazy" decoding="async" />
+        <img {...photoProps(person.photoUrl, "240px")} alt={person.name} loading="lazy" decoding="async" />
       ) : (
         <div className="grid aspect-[3/4] place-items-center text-4xl text-brand">{person.name.slice(0, 1)}</div>
       )}
@@ -264,7 +264,7 @@ export function MembersTable({
                 {person.photoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={resolvePhoto(person.photoUrl)}
+                    {...photoProps(person.photoUrl, "96px")}
                     alt={person.name}
                     className="passport-photo mx-auto"
                     loading="lazy"

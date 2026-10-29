@@ -4,7 +4,7 @@ import { LangSwitcher } from "@/components/lang-switcher";
 import { MobileTasks } from "@/components/mobile-tasks";
 import { SiteNav } from "@/components/site-nav";
 import type { Lang, PublicSite } from "@/lib/types";
-import { resolvePhoto } from "@/lib/media";
+import { localLogoSrc, photoProps } from "@/lib/media";
 import { pick } from "@/lib/text";
 
 const DASHBOARD = process.env.NEXT_PUBLIC_DASHBOARD_URL ?? "http://localhost:3000";
@@ -45,7 +45,7 @@ export function Shell({ site, lang, children }: { site: PublicSite; lang: Lang; 
               <span className="brand-seal">
                 {school.logoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={school.logoUrl} alt="" loading="eager" decoding="async" />
+                  <img src={localLogoSrc(school.logoUrl)} alt="" width={64} height={64} decoding="async" fetchPriority="low" />
                 ) : (
                   <span>{school.name.slice(0, 1)}</span>
                 )}
@@ -144,7 +144,7 @@ export function PageIntro({
       <header>
         <div className="page-banner">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={resolvePhoto(image)} alt={alt || ""} loading="eager" decoding="async" />
+          <img {...photoProps(image)} alt={alt || ""} loading="eager" decoding="async" fetchPriority="high" />
         </div>
         <div className="page-banner-card">
           <Crest label={kicker} />

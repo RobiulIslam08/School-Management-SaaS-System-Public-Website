@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { PageIntro, Shell } from "@/components/shell";
 import { getSite } from "@/lib/api";
 import { getLang } from "@/lib/locale";
-import { resolvePhoto } from "@/lib/media";
+import { photoProps } from "@/lib/media";
 import { pick } from "@/lib/text";
 
 interface AlbumPayload {
@@ -61,7 +61,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string;
           return (
             <figure key={item._id}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={resolvePhoto(item.url)} alt={item.alt || ""} className="w-full rounded-[1.25rem] object-cover" loading="lazy" decoding="async" />
+              <img {...photoProps(item.url)} alt={item.alt || ""} className="w-full rounded-[1.25rem] object-cover" loading="lazy" decoding="async" />
               <figcaption className="mt-2 text-sm text-muted">{pick(lang, item.captionBn, item.captionEn)}</figcaption>
             </figure>
           );

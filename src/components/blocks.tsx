@@ -1,5 +1,5 @@
 import type { Lang, PageBlock } from "@/lib/types";
-import { resolvePhoto } from "@/lib/media";
+import { photoProps } from "@/lib/media";
 import { pick } from "@/lib/text";
 
 interface Section {
@@ -48,7 +48,7 @@ export function Blocks({ blocks, lang }: { blocks: PageBlock[]; lang: Lang }) {
       {images.map((block, index) => (
         <figure key={index} className="article-figure">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={resolvePhoto(block.imageUrl)} alt={block.alt || ""} loading="lazy" decoding="async" />
+          <img {...photoProps(block.imageUrl)} alt={block.alt || ""} loading="lazy" decoding="async" />
         </figure>
       ))}
     </div>

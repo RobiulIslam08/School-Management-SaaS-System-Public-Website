@@ -4,8 +4,10 @@ import { useEffect, useRef } from "react";
 import { hasThemePrimary, resolveThemeVars, themeCss, themeKey, themeStyle, type ThemeVars } from "@/lib/theme-vars";
 import type { ThemeTokens } from "@/lib/types";
 
-const POLL_MS = 60_000;
-const MIN_GAP_MS = 10_000;
+const POLL_MS = 15_000;
+const MIN_GAP_MS = 2_000;
+/** First check runs after the page is interactive so it never competes with LCP. */
+const FIRST_CHECK_MS = 1_500;
 
 function applyThemeToDom(vars: ThemeVars): void {
   const root = document.documentElement;
@@ -16,8 +18,9 @@ function applyThemeToDom(vars: ThemeVars): void {
 
 /**
  * The server already painted `initialTheme`; this only picks up a theme saved in the
- * dashboard after the static page was generated. Applies the full token set, and only
- * when it actually differs, so normal navigation never touches colors.
+ * dashboard after the static page was generated (once after load, on tab focus, and every
+ * 15s while visible). Applies the full token set, and only when it actually differs, so normal
+ * navigation never touches colors.
  */
 export function ThemeSync({ initialTheme }: { initialTheme: ThemeVars }) {
   const currentKeyRef = useRef(themeKey(initialTheme));
@@ -26,7 +29,6 @@ export function ThemeSync({ initialTheme }: { initialTheme: ThemeVars }) {
 
   useEffect(() => {
     let cancelled = false;
-    lastSyncAtRef.current = Date.now();
 
     function applyIfChanged(theme: Partial<ThemeTokens> | undefined) {
       if (!hasThemePrimary(theme)) return;
@@ -77,12 +79,14 @@ export function ThemeSync({ initialTheme }: { initialTheme: ThemeVars }) {
       }
     }
 
+    const firstCheck = window.setTimeout(() => void syncFromServer(true), FIRST_CHECK_MS);
     const timer = window.setInterval(() => {
       if (document.visibilityState === "visible") void syncFromServer();
     }, POLL_MS);
 
     return () => {
       cancelled = true;
+      window.clearTimeout(firstCheck);
       window.removeEventListener("focus", onFocus);
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("storage", onStorage);

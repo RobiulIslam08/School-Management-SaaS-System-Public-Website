@@ -3,7 +3,7 @@ import { ProfileFrame } from "@/components/people-board";
 import { PageIntro, Shell } from "@/components/shell";
 import { getSite } from "@/lib/api";
 import { getLang, type LangProps } from "@/lib/locale";
-import { resolvePhoto } from "@/lib/media";
+import { photoProps } from "@/lib/media";
 import { pick } from "@/lib/text";
 import type { Lang, TeacherItem } from "@/lib/types";
 
@@ -174,7 +174,7 @@ function TeacherTable({
                     {teacher.photoUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={resolvePhoto(teacher.photoUrl)}
+                        {...photoProps(teacher.photoUrl, "96px")}
                         alt={teacher.name}
                         className="passport-photo"
                         loading="lazy"

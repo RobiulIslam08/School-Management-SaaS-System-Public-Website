@@ -1,5 +1,5 @@
 import React from "react";
-import { resolvePhoto } from "@/lib/media";
+import { photoProps, resolvePhoto } from "@/lib/media";
 
 export interface RoyalFrameProps {
   photoUrl?: string;
@@ -38,7 +38,7 @@ export function RoyalFrame({
           {resolved ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={resolved}
+              {...photoProps(resolved, "240px")}
               alt={name}
               loading={priority ? "eager" : "lazy"}
               decoding="async"
@@ -54,11 +54,11 @@ export function RoyalFrame({
         {/* 3D Ornate Baroque Carved Frame Overlay */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/media/baroque-gold-frame.webp"
+          {...photoProps("/media/baroque-gold-frame.webp", "320px")}
           alt=""
           aria-hidden="true"
           className="royal-frame-overlay"
-          loading="eager"
+          loading={priority ? "eager" : "lazy"}
           decoding="async"
         />
       </div>

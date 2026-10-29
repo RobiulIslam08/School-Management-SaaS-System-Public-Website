@@ -2,7 +2,7 @@ import Link from "next/link";
 import { PageIntro, Shell } from "@/components/shell";
 import { getSite } from "@/lib/api";
 import { getLang, type LangProps } from "@/lib/locale";
-import { resolvePhoto } from "@/lib/media";
+import { photoProps, resolvePhoto } from "@/lib/media";
 import { formatDay, pick } from "@/lib/text";
 
 export default async function Page({ params }: LangProps) {
@@ -17,7 +17,7 @@ export default async function Page({ params }: LangProps) {
           <Link href={`/news/${lead._id}`} className="feature-card">
             {lead.coverUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={resolvePhoto(lead.coverUrl)} alt={lead.coverAlt || ""} className="aspect-[16/10]" loading="lazy" decoding="async" />
+              <img {...photoProps(lead.coverUrl)} alt={lead.coverAlt || ""} className="aspect-[16/10]" loading="lazy" decoding="async" />
             ) : null}
             <div className="p-6">
               <p className="text-xs uppercase tracking-[0.16em] text-accent">{lead.kind}</p>
