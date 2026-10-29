@@ -131,6 +131,9 @@ export interface PageSummary {
   titleEn?: string;
   summaryBn?: string;
   summaryEn?: string;
+  seoDescriptionBn?: string;
+  seoDescriptionEn?: string;
+  blocks?: PageBlock[];
 }
 
 export interface PageBlock {

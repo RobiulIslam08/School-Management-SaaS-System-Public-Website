@@ -1,38 +1,33 @@
 export default function Loading() {
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-16" aria-live="polite" aria-busy="true">
-      <div className="relative flex flex-col items-center justify-center">
-        {/* Animated outer ring */}
-        <div className="relative h-16 w-16">
-          <div
-            className="absolute inset-0 rounded-full border-4 border-t-transparent animate-spin"
-            style={{
-              borderColor: "rgba(var(--brand-rgb, 20, 83, 45), 0.15)",
-              borderTopColor: "var(--brand, #14532d)",
-            }}
-          />
-          <div
-            className="absolute inset-2 rounded-full border-2 border-b-transparent animate-spin"
-            style={{
-              animationDirection: "reverse",
-              animationDuration: "0.8s",
-              borderColor: "rgba(var(--accent-rgb, 138, 106, 50), 0.2)",
-              borderBottomColor: "var(--accent, #8a6a32)",
-            }}
-          />
-        </div>
-
-        {/* Text feedback */}
-        <p className="mt-4 text-sm font-semibold tracking-wide text-brand animate-pulse">
-          লোড হচ্ছে...
-        </p>
+    <div className="mx-auto max-w-7xl px-4 py-8 space-y-6 animate-pulse" aria-live="polite" aria-busy="true">
+      {/* Banner skeleton */}
+      <div className="h-44 sm:h-60 w-full rounded-2xl border border-line/60 bg-card/80 p-6 flex flex-col justify-end space-y-3">
+        <div className="h-3 w-28 rounded-full bg-brand/15" />
+        <div className="h-8 w-2/3 sm:w-1/2 rounded-lg bg-brand/20" />
+        <div className="h-4 w-3/4 sm:w-2/3 rounded-md bg-ink/10" />
       </div>
 
-      {/* Subtle skeleton cards layout */}
-      <div className="mx-auto mt-12 grid w-full max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 opacity-40">
-        <div className="h-28 rounded-2xl border border-line bg-card p-4 animate-pulse" />
-        <div className="h-28 rounded-2xl border border-line bg-card p-4 animate-pulse" />
-        <div className="h-28 rounded-2xl border border-line bg-card p-4 animate-pulse" />
+      {/* Content cards skeleton */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="h-36 rounded-2xl border border-line/60 bg-card p-5 space-y-3">
+          <div className="h-4 w-16 rounded bg-brand/15" />
+          <div className="h-5 w-3/4 rounded bg-ink/15" />
+          <div className="h-3 w-full rounded bg-ink/10" />
+          <div className="h-3 w-2/3 rounded bg-ink/10" />
+        </div>
+        <div className="h-36 rounded-2xl border border-line/60 bg-card p-5 space-y-3">
+          <div className="h-4 w-16 rounded bg-brand/15" />
+          <div className="h-5 w-3/4 rounded bg-ink/15" />
+          <div className="h-3 w-full rounded bg-ink/10" />
+          <div className="h-3 w-2/3 rounded bg-ink/10" />
+        </div>
+        <div className="h-36 rounded-2xl border border-line/60 bg-card p-5 space-y-3 hidden lg:block">
+          <div className="h-4 w-16 rounded bg-brand/15" />
+          <div className="h-5 w-3/4 rounded bg-ink/15" />
+          <div className="h-3 w-full rounded bg-ink/10" />
+          <div className="h-3 w-2/3 rounded bg-ink/10" />
+        </div>
       </div>
     </div>
   );

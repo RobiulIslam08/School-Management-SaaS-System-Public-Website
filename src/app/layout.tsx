@@ -8,8 +8,7 @@ import { getSite, safeColor } from "@/lib/api";
 import { pick } from "@/lib/text";
 import "./globals.css";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 30;
 
 function hexToRgb(hex: string): string {
   const clean = hex.replace("#", "");

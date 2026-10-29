@@ -1,4 +1,5 @@
 import { PageIntro, Shell } from "@/components/shell";
+import { PrintFormButton } from "@/components/print-form-button";
 import { getSite } from "@/lib/api";
 import { getLang } from "@/lib/locale";
 
@@ -21,13 +22,7 @@ export default async function BlankAdmissionFormPage() {
           alt={site.school.name}
         />
         <div className="mx-auto max-w-3xl px-4 py-4 flex justify-end">
-          <button
-            type="button"
-            className="rounded-full bg-brand px-6 py-2.5 text-sm font-bold text-on-brand hover:opacity-90 shadow"
-            onClick={undefined}
-          >
-            🖨️ {lang === "bn" ? "ভর্তি ফরম প্রিন্ট করুন" : "Print Admission Form"}
-          </button>
+          <PrintFormButton lang={lang} />
         </div>
       </div>
 

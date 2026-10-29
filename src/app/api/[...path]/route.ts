@@ -149,7 +149,7 @@ async function proxy(req: NextRequest, context: { params: Promise<{ path: string
     if (lower === "location" || HOP_BY_HOP.has(lower)) return;
     out.append(key, value);
   });
-  out.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  out.set("Cache-Control", method === "GET" ? "private, max-age=0, must-revalidate" : "no-store, no-cache, must-revalidate, proxy-revalidate");
   out.delete("content-encoding");
   out.delete("content-length");
   return new NextResponse(await result.arrayBuffer(), { status: result.status, headers: out });

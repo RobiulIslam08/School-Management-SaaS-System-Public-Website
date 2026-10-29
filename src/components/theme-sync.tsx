@@ -87,6 +87,7 @@ export function ThemeSync({ initialPrimary }: { initialPrimary: string }) {
   const pathname = usePathname();
   const currentPrimaryRef = useRef(initialPrimary.toLowerCase());
   const inFlightRef = useRef(false);
+  const lastSyncAtRef = useRef(0);
 
   useEffect(() => {
     const validInitial = validHex(initialPrimary);
@@ -99,11 +100,14 @@ export function ThemeSync({ initialPrimary }: { initialPrimary: string }) {
   useEffect(() => {
     let cancelled = false;
 
-    async function syncFromServer() {
+    async function syncFromServer(force = false) {
       if (inFlightRef.current || cancelled) return;
+      const now = Date.now();
+      if (!force && now - lastSyncAtRef.current < 10_000) return;
       inFlightRef.current = true;
+      lastSyncAtRef.current = now;
       try {
-        const res = await fetch(`/api/v1/public/branding?_t=${Date.now()}`, {
+        const res = await fetch(`/api/v1/public/branding?_t=${now}`, {
           cache: "no-store",
           headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
         });
@@ -122,14 +126,16 @@ export function ThemeSync({ initialPrimary }: { initialPrimary: string }) {
       }
     }
 
-    void syncFromServer();
+    const initialTimer = window.setTimeout(() => {
+      void syncFromServer();
+    }, 300);
 
     const onFocus = () => {
-      void syncFromServer();
+      void syncFromServer(true);
     };
     const onVisibility = () => {
       if (document.visibilityState === "visible") {
-        void syncFromServer();
+        void syncFromServer(true);
       }
     };
     const onStorage = (event: StorageEvent) => {
@@ -142,7 +148,7 @@ export function ThemeSync({ initialPrimary }: { initialPrimary: string }) {
         } catch {
           // Ignore malformed storage payload
         }
-        void syncFromServer();
+        void syncFromServer(true);
       }
     };
 
@@ -160,7 +166,7 @@ export function ThemeSync({ initialPrimary }: { initialPrimary: string }) {
           if (primary) {
             applyThemeToDom({ primary });
           }
-          void syncFromServer();
+          void syncFromServer(true);
         };
       } catch {
         channel = null;
@@ -169,12 +175,13 @@ export function ThemeSync({ initialPrimary }: { initialPrimary: string }) {
 
     const timer = window.setInterval(() => {
       if (document.visibilityState === "visible") {
-        void syncFromServer();
+        void syncFromServer(true);
       }
-    }, 4000);
+    }, 15_000);
 
     return () => {
       cancelled = true;
+      window.clearTimeout(initialTimer);
       window.removeEventListener("focus", onFocus);
       window.removeEventListener("pageshow", onFocus);
       document.removeEventListener("visibilitychange", onVisibility);

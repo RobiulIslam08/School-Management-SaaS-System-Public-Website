@@ -80,10 +80,10 @@ export async function PeopleDirectory({
       {links?.length ? (
         <div className="hub-grid">
           {links.map((item, index) => (
-            <a key={item.href} className="hub-card" href={item.href}>
+            <Link key={item.href} className="hub-card" href={item.href} prefetch={true}>
               <strong>{String(index + 1).padStart(2, "0")}</strong>
               <span className="text-xl font-semibold text-brand">{item.label}</span>
-            </a>
+            </Link>
           ))}
         </div>
       ) : null}

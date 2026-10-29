@@ -4,6 +4,12 @@ const nextConfig: NextConfig = {
   images: { unoptimized: true },
   // Repo already has agent instructions. Do not generate a second AGENTS.md.
   agentRules: false,
+  experimental: {
+    staleTimes: {
+      dynamic: 60,
+      static: 300,
+    },
+  },
   headers: async () => [
     {
       source: "/media/:path*",

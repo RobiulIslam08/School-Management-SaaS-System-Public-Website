@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { Lang, MenuItem } from "@/lib/types";
@@ -45,6 +45,7 @@ export function SiteNav({
   mark: string;
 }) {
   const path = usePathname();
+  const router = useRouter();
   const [openKey, setOpenKey] = useState<string | null>(null);
   const [drawer, setDrawer] = useState(false);
   const [drawerKey, setDrawerKey] = useState<string | null>(null);
@@ -52,13 +53,62 @@ export function SiteNav({
   const button = useRef<HTMLButtonElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const closeTimer = useRef<number | null>(null);
+  const prefetchedRef = useRef<Set<string>>(new Set());
   const titleId = useId();
   const visible = menus.filter((item) => item.visible !== false && item.key !== "login");
   const bn = lang === "bn";
 
+  function prefetchHref(href: string) {
+    if (!href || !href.startsWith("/") || prefetchedRef.current.has(href)) return;
+    prefetchedRef.current.add(href);
+    try {
+      router.prefetch(href);
+    } catch {
+      // ignore prefetch errors
+    }
+  }
+
+  function prefetchMenuGroup(item: MenuItem) {
+    prefetchHref(item.href);
+    for (const child of item.children ?? []) {
+      if (child.visible !== false) {
+        prefetchHref(child.href);
+      }
+    }
+  }
+
+  // Close open flyout/drawer immediately when route changes
+  useEffect(() => {
+    setOpenKey(null);
+    setDrawer(false);
+  }, [path]);
+
+  // Background idle prefetch for all top-level and submenu routes so menu clicks render in 0ms
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      for (const item of visible) {
+        prefetchHref(item.href);
+      }
+      const subTimer = window.setTimeout(() => {
+        for (const item of visible) {
+          for (const child of item.children ?? []) {
+            if (child.visible !== false) {
+              prefetchHref(child.href);
+            }
+          }
+        }
+      }, 600);
+      return () => window.clearTimeout(subTimer);
+    }, 150);
+    return () => window.clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   function arm(key: string) {
     if (closeTimer.current) window.clearTimeout(closeTimer.current);
     setOpenKey(key);
+    const matched = visible.find((m) => m.key === key);
+    if (matched) prefetchMenuGroup(matched);
   }
 
   function disarm(node: HTMLElement) {
@@ -169,7 +219,7 @@ export function SiteNav({
                   </div>
                   <div className={children.length > 4 ? "menu-links menu-links-split" : "menu-links"}>
                     {children.map((child, childIndex) => (
-                      <Link key={child.key} href={child.href} prefetch={true}>
+                      <Link key={child.key} href={child.href} prefetch={true} onClick={() => setOpenKey(null)}>
                         <span className="menu-index">{indexLabel(childIndex + 1, lang)}</span>
                         <span>{pick(lang, child.labelBn, child.labelEn)}</span>
                       </Link>
