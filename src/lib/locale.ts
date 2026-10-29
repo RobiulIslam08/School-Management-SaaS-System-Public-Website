@@ -1,8 +1,17 @@
-import { cache } from "react";
-import { cookies } from "next/headers";
 import type { Lang } from "./types";
 
-export const getLang = cache(async (): Promise<Lang> => {
-  const jar = await cookies();
-  return jar.get("lang")?.value === "en" ? "en" : "bn";
-});
+export const LANGS: readonly Lang[] = ["bn", "en"];
+export const LANG_COOKIE = "lang";
+
+export type LangParams = Promise<{ lang: string }>;
+export type LangProps = { params: LangParams };
+
+export function toLang(value?: string | null): Lang {
+  return value === "en" ? "en" : "bn";
+}
+
+/** Language comes from the hidden `[lang]` segment (set by `src/proxy.ts`), never from cookies, so pages stay static. */
+export async function getLang(params: Promise<{ lang?: string }>): Promise<Lang> {
+  const { lang } = await params;
+  return toLang(lang);
+}

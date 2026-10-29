@@ -1,7 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { useState } from "react";
 import type { Lang } from "@/lib/types";
 
 const YEAR = 60 * 60 * 24 * 365;
@@ -11,31 +10,21 @@ function writeLangCookie(lang: Lang) {
 }
 
 /**
- * Instant language toggle: set cookie + soft refresh.
- * Avoids /locale redirect round-trip and the full-page "লোড হচ্ছে" bar.
+ * Language lives in the hidden `[lang]` root segment, so switching swaps the root
+ * layout; a reload of the (static, cached) page is the reliable way to do that.
  */
 export function LangSwitcher({ lang }: { lang: Lang }) {
-  const router = useRouter();
-  const [current, setCurrent] = useState<Lang>(lang);
-  const [pending, startTransition] = useTransition();
-
-  useEffect(() => {
-    setCurrent(lang);
-  }, [lang]);
+  const [pending, setPending] = useState(false);
 
   function onSwitch() {
     if (pending) return;
-    const next: Lang = current === "bn" ? "en" : "bn";
-    setCurrent(next);
-    writeLangCookie(next);
-    document.documentElement.lang = next;
-    startTransition(() => {
-      router.refresh();
-    });
+    setPending(true);
+    writeLangCookie(lang === "bn" ? "en" : "bn");
+    window.location.reload();
   }
 
-  const label = current === "bn" ? "English" : "বাংলা";
-  const aria = current === "bn" ? "Switch to English" : "বাংলায় দেখুন";
+  const label = lang === "bn" ? "English" : "বাংলা";
+  const aria = lang === "bn" ? "Switch to English" : "বাংলায় দেখুন";
 
   return (
     <button

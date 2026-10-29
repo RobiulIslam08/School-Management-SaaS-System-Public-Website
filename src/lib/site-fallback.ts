@@ -8,7 +8,7 @@ export interface LegacyBranding {
   eiin?: string;
   establishedYear?: number | null;
   academicYear?: string;
-  theme?: { primary?: string };
+  theme?: Partial<ThemeTokens>;
   publicAdmission?: boolean;
 }
 
@@ -175,16 +175,20 @@ function classLevel(name: string): number {
   return match ? Number(match[1]) : 0;
 }
 
-function themeFrom(primary: string | undefined): ThemeTokens {
-  const color = primary && /^#[0-9a-fA-F]{6}$/.test(primary) ? primary : "#14532d";
+function hexOr(value: string | undefined, fallback: string): string {
+  return value && /^#[0-9a-fA-F]{6}$/.test(value) ? value : fallback;
+}
+
+function themeFrom(theme: Partial<ThemeTokens> | undefined): ThemeTokens {
+  const color = hexOr(theme?.primary, "#14532d");
   return {
-    preset: color.toLowerCase() === "#14532d" ? "heritage" : "custom",
+    preset: theme?.preset || (color.toLowerCase() === "#14532d" ? "heritage" : "custom"),
     primary: color,
-    onPrimary: "#ffffff",
-    accent: "#8a6a32",
-    surface: "#f6f3ec",
-    ink: "#1c1917",
-    radius: "0.75rem",
+    onPrimary: hexOr(theme?.onPrimary, "#ffffff"),
+    accent: hexOr(theme?.accent, "#8a6a32"),
+    surface: hexOr(theme?.surface, "#f6f3ec"),
+    ink: hexOr(theme?.ink, "#1c1917"),
+    radius: theme?.radius || "0.75rem",
   };
 }
 
@@ -207,7 +211,7 @@ export function siteFromLegacy(branding: LegacyBranding, notices: NoticeItem[], 
       mapEmbedUrl: "",
       facebook: "",
       youtube: "",
-      theme: themeFrom(branding.theme?.primary),
+      theme: themeFrom(branding.theme),
       heroTitleBn: name,
       heroTitleEn: name,
       heroSubtitleBn: branding.motto || "ফলাফল, নোটিশ ও ভর্তি — এক জায়গায়।",

@@ -3,6 +3,9 @@
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+/** Cached static pages swap well under this, so the pill only shows on a genuinely slow hop. */
+const SPINNER_DELAY_MS = 400;
+
 export function RouteProgress() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -16,9 +19,9 @@ export function RouteProgress() {
       window.clearTimeout(spinnerTimerRef.current);
       spinnerTimerRef.current = null;
     }
-    setShowSpinner(false);
     // When path or search parameters change, complete progress and fade out quickly
     const frame = requestAnimationFrame(() => {
+      setShowSpinner(false);
       setProgress(100);
     });
     const timer = setTimeout(() => {
@@ -64,7 +67,7 @@ export function RouteProgress() {
           if (spinnerTimerRef.current) window.clearTimeout(spinnerTimerRef.current);
           spinnerTimerRef.current = window.setTimeout(() => {
             setShowSpinner(true);
-          }, 250);
+          }, SPINNER_DELAY_MS);
         }
       } catch {
         // invalid URL, ignore
@@ -92,15 +95,16 @@ export function RouteProgress() {
 
   if (!active && progress === 0) return null;
 
+  const label = typeof document !== "undefined" && document.documentElement.lang === "en" ? "Loading..." : "লোড হচ্ছে...";
+
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-x-0 top-0 z-[9999] transition-opacity duration-150"
+      className="pointer-events-none fixed inset-0 z-[9999] transition-opacity duration-150 motion-reduce:transition-none"
       style={{ opacity: active ? 1 : 0 }}
     >
-      {/* Top progress bar with glow */}
       <div
-        className="h-[3px] w-full transition-[width] duration-150 ease-out"
+        className="absolute left-0 top-0 h-[3px] transition-[width] duration-150 ease-out motion-reduce:transition-none"
         style={{
           width: `${progress}%`,
           background: "linear-gradient(90deg, var(--brand, #14532d), var(--accent, #8a6a32), var(--brand, #14532d))",
@@ -108,30 +112,19 @@ export function RouteProgress() {
         }}
       />
 
-      {/* Floating spinner in top-right corner — only appears if navigation takes >250ms */}
       {showSpinner ? (
-        <div className="absolute right-4 top-4 flex items-center gap-2 rounded-full border border-line/40 bg-card/90 px-3 py-1.5 shadow-lg backdrop-blur-sm animate-in fade-in zoom-in-95 duration-150">
-          <svg
-            className="h-4 w-4 animate-spin text-brand"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="3"
-            />
-            <path
-              className="opacity-90"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            />
-          </svg>
-          <span className="text-xs font-semibold text-brand">লোড হচ্ছে...</span>
+        <div className="flex h-full w-full items-center justify-center">
+          <div className="flex items-center gap-2 rounded-full border border-line/40 bg-card px-4 py-2 shadow-lg">
+            <svg className="h-4 w-4 animate-spin text-brand motion-reduce:animate-none" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+              <path
+                className="opacity-90"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              />
+            </svg>
+            <span className="text-sm font-semibold text-brand">{label}</span>
+          </div>
         </div>
       ) : null}
     </div>

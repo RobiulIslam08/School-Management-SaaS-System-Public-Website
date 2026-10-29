@@ -77,32 +77,12 @@ export function SiteNav({
     }
   }
 
-  // Close open flyout/drawer immediately when route changes
-  useEffect(() => {
+  const [seenPath, setSeenPath] = useState(path);
+  if (seenPath !== path) {
+    setSeenPath(path);
     setOpenKey(null);
     setDrawer(false);
-  }, [path]);
-
-  // Background idle prefetch for all top-level and submenu routes so menu clicks render in 0ms
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      for (const item of visible) {
-        prefetchHref(item.href);
-      }
-      const subTimer = window.setTimeout(() => {
-        for (const item of visible) {
-          for (const child of item.children ?? []) {
-            if (child.visible !== false) {
-              prefetchHref(child.href);
-            }
-          }
-        }
-      }, 600);
-      return () => window.clearTimeout(subTimer);
-    }, 150);
-    return () => window.clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }
 
   function arm(key: string) {
     if (closeTimer.current) window.clearTimeout(closeTimer.current);

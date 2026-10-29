@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import { Blocks } from "@/components/blocks";
 import { PageIntro, Shell } from "@/components/shell";
 import { getPage, getSite } from "@/lib/api";
-import { getLang } from "@/lib/locale";
 import { pick } from "@/lib/text";
+import type { Lang } from "@/lib/types";
 
 const BLURB: Record<string, { bn: string; en: string }> = {
   gallery: { bn: "ক্যাম্পাস, সংস্কৃতি ও খেলার অ্যালবাম।", en: "Albums of the campus, culture, and sports." },
@@ -16,8 +16,8 @@ const BLURB: Record<string, { bn: string; en: string }> = {
   results: { bn: "শিক্ষার্থী আইডি দিয়ে প্রকাশিত ফল।", en: "A published result with a student ID." },
 };
 
-export async function ContentPage({ slug, kicker }: { slug: string; kicker: string }) {
-  const [site, lang, page] = await Promise.all([getSite(), getLang(), getPage(slug)]);
+export async function ContentPage({ slug, kicker, lang }: { slug: string; kicker: string; lang: Lang }) {
+  const [site, page] = await Promise.all([getSite(), getPage(slug)]);
   if (!site) return <p className="p-8">The school site could not be loaded.</p>;
   if (!page) notFound();
   const blocks = page.blocks ?? [];
@@ -43,8 +43,8 @@ export async function ContentPage({ slug, kicker }: { slug: string; kicker: stri
   );
 }
 
-export async function HubPage({ menuKey }: { menuKey: string }) {
-  const [site, lang] = await Promise.all([getSite(), getLang()]);
+export async function HubPage({ menuKey, lang }: { menuKey: string; lang: Lang }) {
+  const site = await getSite();
   if (!site) return <p className="p-8">The school site could not be loaded.</p>;
   const menu = site.config.menus.find((item) => item.key === menuKey);
   const pages = site.pages.filter((page) => page.menuKey === menuKey);

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { PageIntro, Shell } from "@/components/shell";
 import { getSite } from "@/lib/api";
 import type { Lang, PersonItem, PublicSite } from "@/lib/types";
-import { getLang } from "@/lib/locale";
 import { resolvePhoto } from "@/lib/media";
 import { pick } from "@/lib/text";
 import { FramedBaniBoard } from "@/components/framed-bani-board";
@@ -15,6 +14,7 @@ export function personHref(person: Pick<PersonItem, "_id" | "board">): string {
 }
 
 export async function PeopleDirectory({
+  lang,
   title,
   summary,
   note,
@@ -25,6 +25,7 @@ export async function PeopleDirectory({
   leaders = [],
   useTable = false,
 }: {
+  lang: Lang;
   title: string;
   summary?: string;
   note?: string;
@@ -35,7 +36,7 @@ export async function PeopleDirectory({
   leaders?: Array<PersonItem & { slogan?: string; noLink?: boolean }>;
   useTable?: boolean;
 }) {
-  const [site, lang] = await Promise.all([getSite(), getLang()]);
+  const site = await getSite();
   if (!site) return <p className="p-8">The school site could not be loaded.</p>;
   const detail = (
     <>
