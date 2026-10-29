@@ -3,11 +3,13 @@ import { Fraunces, Noto_Sans_Bengali } from "next/font/google";
 import { Suspense } from "react";
 import { HtmlLang } from "@/components/html-lang";
 import { RouteProgress } from "@/components/route-progress";
+import { ThemeSync } from "@/components/theme-sync";
 import { getSite, safeColor } from "@/lib/api";
 import { pick } from "@/lib/text";
 import "./globals.css";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 function hexToRgb(hex: string): string {
   const clean = hex.replace("#", "");
@@ -61,15 +63,34 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const inkRgb = hexToRgb(ink);
 
   return (
-    <html lang="bn" translate="no" className={`notranslate ${noto.variable} ${display.variable}`} style={{ colorScheme: "light" }}>
+    <html
+      lang="bn"
+      translate="no"
+      className={`notranslate ${noto.variable} ${display.variable}`}
+      style={
+        {
+          colorScheme: "light",
+          "--brand": brand,
+          "--brand-rgb": brandRgb,
+          "--on-brand": onBrand,
+          "--paper": paper,
+          "--paper-rgb": paperRgb,
+          "--ink": ink,
+          "--ink-rgb": inkRgb,
+          "--accent": accent,
+          "--accent-rgb": accentRgb,
+        } as React.CSSProperties
+      }
+    >
       <head>
         <meta name="color-scheme" content="light" />
         <link rel="preload" as="image" href="/media/campus.webp" fetchPriority="high" />
       </head>
       <body className="min-h-screen antialiased">
         <HtmlLang />
-        <style>{`:root{color-scheme:light;--brand:${brand};--brand-rgb:${brandRgb};--on-brand:${onBrand};--paper:${paper};--paper-rgb:${paperRgb};--ink:${ink};--ink-rgb:${inkRgb};--accent:${accent};--accent-rgb:${accentRgb};--card:#fffdf8;--card-rgb:255, 253, 248;}`}</style>
+        <style id="school-theme-vars">{`:root{color-scheme:light;--brand:${brand};--brand-rgb:${brandRgb};--on-brand:${onBrand};--paper:${paper};--paper-rgb:${paperRgb};--ink:${ink};--ink-rgb:${inkRgb};--accent:${accent};--accent-rgb:${accentRgb};--card:#fffdf8;--card-rgb:255, 253, 248;}`}</style>
         <Suspense fallback={null}>
+          <ThemeSync initialPrimary={brand} />
           <RouteProgress />
         </Suspense>
         {site ? (

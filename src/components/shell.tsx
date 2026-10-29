@@ -18,39 +18,29 @@ export function Shell({ site, lang, children }: { site: PublicSite; lang: Lang; 
         {lang === "bn" ? "মূল অংশে যান" : "Skip to content"}
       </a>
       <header className="site-header sticky top-0 z-40">
-        <div className="utility-bar">
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4">
-            <div className="flex min-w-0 items-center gap-3">
-              {school.eiin ? <span className="seal-chip">EIIN {school.eiin}</span> : null}
-              {school.academicYear ? <span className="hidden sm:inline text-xs opacity-90">{school.academicYear}</span> : null}
-              {config.phone ? (
-                <a className="hidden truncate md:inline text-xs opacity-90 hover:opacity-100" href={`tel:${config.phone.replace(/\s/g, "")}`}>
-                  {config.phone}
-                </a>
-              ) : null}
-            </div>
-            <div className="utility-center-brand flex flex-1 items-center justify-center px-2 text-center min-w-0">
-              <span className="truncate font-extrabold text-xs sm:text-sm md:text-base text-amber-200 tracking-wide drop-shadow-sm">
-                🏛️ {school.name}
-              </span>
-            </div>
+        <div className="nav-bar">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-1">
+            <SiteNav menus={config.menus} lang={lang} schoolName={school.name} mark={school.name.slice(0, 1)} />
             <div className="utility-actions">
+              {school.eiin ? <span className="seal-chip">EIIN {school.eiin}</span> : null}
               <LangSwitcher lang={lang} />
               <span className="utility-rule" aria-hidden="true" />
-              <Link href="/student-portal/dashboard" className="font-bold text-amber-300 hover:text-white">
+              <Link href="/student-portal/dashboard" className="utility-pill">
                 🎓 {lang === "bn" ? "স্টুডেন্ট পোর্টাল" : "Student Portal"}
               </Link>
-              <span className="utility-rule" aria-hidden="true" />
-              <Link href="/board" target="_blank" className="hover:underline">
+              <span className="utility-rule hidden sm:inline-block" aria-hidden="true" />
+              <Link href="/board" target="_blank" className="hidden sm:inline hover:underline">
                 📺 {lang === "bn" ? "লাইভ ডিসপ্লে" : "Live Board"}
               </Link>
               <span className="utility-rule" aria-hidden="true" />
-              <a href={login}>{lang === "bn" ? "লগইন" : "Login"}</a>
+              <a href={login} className="hover:underline">
+                {lang === "bn" ? "লগইন" : "Login"}
+              </a>
             </div>
           </div>
         </div>
-        <div className="masthead">
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4">
+        <div className="brand-band">
+          <div className="mx-auto flex max-w-7xl items-center justify-center px-4 py-3 sm:py-4">
             <Link href="/" className="brand-lockup">
               <span className="brand-seal">
                 {school.logoUrl ? (
@@ -60,12 +50,10 @@ export function Shell({ site, lang, children }: { site: PublicSite; lang: Lang; 
                   <span>{school.name.slice(0, 1)}</span>
                 )}
               </span>
-              <span className="min-w-0">
+              <span className="min-w-0 text-center sm:text-left">
                 <span className="display brand-name">{school.name}</span>
-                {school.motto ? <span className="brand-motto">{school.motto}</span> : null}
               </span>
             </Link>
-            <SiteNav menus={config.menus} lang={lang} schoolName={school.name} mark={school.name.slice(0, 1)} />
           </div>
         </div>
       </header>

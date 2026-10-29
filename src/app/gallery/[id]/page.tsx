@@ -14,7 +14,7 @@ async function album(id: string): Promise<AlbumPayload | null> {
   const origin = (process.env.API_PROXY_URL ?? "http://localhost:4000").replace(/\/$/, "");
   try {
     const response = await fetch(`${origin}/api/v1/public/website/albums/${id}`, {
-      next: { revalidate: 60, tags: ["public-site"] },
+      cache: "no-store",
     });
     if (!response.ok) return null;
     const json = (await response.json()) as { data?: AlbumPayload };

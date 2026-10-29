@@ -1,14 +1,14 @@
 import { cache } from "react";
 import { apiOrigin } from "./origin";
-import { legacyPage, siteFromLegacy } from "./site-fallback";
+import { legacyPage, siteFromLegacy, type LegacyBranding } from "./site-fallback";
 import type { NoticeItem, PageDetail, PostItem, PublicSite } from "./types";
 
 async function read<T>(path: string): Promise<T | null> {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 12000);
+  const timer = setTimeout(() => controller.abort(), 25000);
   try {
     const response = await fetch(`${apiOrigin()}/api/v1${path}`, {
-      next: { revalidate: 60, tags: ["public-site"] },
+      cache: "no-store",
       signal: controller.signal,
     });
     clearTimeout(timer);
@@ -33,7 +33,8 @@ export const getSite = cache(async (): Promise<PublicSite> => {
     }
     return site;
   }
-  return siteFromLegacy({}, [], []);
+  const branding = await read<LegacyBranding>("/public/branding");
+  return siteFromLegacy(branding ?? {}, [], []);
 });
 
 export const getPage = cache(async (slug: string): Promise<PageDetail | null> => {

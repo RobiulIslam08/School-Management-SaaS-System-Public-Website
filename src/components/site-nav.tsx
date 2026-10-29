@@ -121,7 +121,7 @@ export function SiteNav({
   return (
     <>
       <nav ref={navRef} className="desk-nav" aria-label={bn ? "প্রধান মেনু" : "Main"}>
-        {visible.map((item, index) => {
+        {visible.map((item) => {
           const children = (item.children ?? []).filter((child) => child.visible !== false);
           const label = pick(lang, item.labelBn, item.labelEn);
           const current = isCurrent(item.href, path) || children.some((child) => isCurrent(child.href, path));
@@ -137,7 +137,6 @@ export function SiteNav({
             <div
               key={item.key}
               className={open ? "nav-item is-open" : current ? "nav-item is-current" : "nav-item"}
-              data-align={index >= 3 ? "end" : "start"}
               onPointerEnter={(event) => {
                 if (event.pointerType === "mouse") arm(item.key);
               }}
